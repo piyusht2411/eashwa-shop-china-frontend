@@ -9,17 +9,34 @@ const Clearance = () => {
     dutyPaid: "",
     usdRateAtClearance: "",
     clearanceDate: "",
-    igmAttachment: "",
+    igmAttachment: null, // Store file
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, files } = e.target;
+
+    if (name === "igmAttachment") {
+      setFormData({ ...formData, [name]: files[0] }); // Store file object
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Clearance Form Data:", formData);
-    // API logic here
+    const formPayload = new FormData();
+
+    for (let key in formData) {
+      formPayload.append(key, formData[key]);
+    }
+
+    // Send formPayload to backend using fetch/axios
+    console.log("Form submitted");
+    // Example:
+    // fetch('/api/upload', {
+    //   method: 'POST',
+    //   body: formPayload,
+    // })
   };
 
   return (
@@ -37,7 +54,6 @@ const Clearance = () => {
             { label: "Duty Paid", name: "dutyPaid", type: "number" },
             { label: "USD Rate at Clearance", name: "usdRateAtClearance", type: "number" },
             { label: "Clearance Date", name: "clearanceDate", type: "date" },
-            { label: "IGM Attachment URL", name: "igmAttachment", type: "text" },
           ].map((field) => (
             <div key={field.name}>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -53,6 +69,21 @@ const Clearance = () => {
               />
             </div>
           ))}
+
+          {/* File Upload Field for IGM Attachment */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              IGM Attachment (PDF)
+            </label>
+            <input
+              type="file"
+              name="igmAttachment"
+              accept="application/pdf"
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm cursor-pointer"
+            />
+          </div>
 
           <button
             type="submit"
