@@ -15,13 +15,7 @@ const Header = () => {
     </Link>
  
         {/* Login Icon */}
-      <Link href='/login' >
-       <div className="text-green-600 text-2xl cursor-pointer hover:text-green-700 transition">
-          <FaUserCircle 
-          className="h-8 w-8"
-          />
-        </div> 
-      </Link>
+     
       </header>
 
    
