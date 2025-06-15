@@ -1,20 +1,48 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    emailOrUsername: "",
+    email: "",
     password: "",
   });
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login Data:", formData);
-    // API call logic here
+    setError("");
+
+    try {
+      const response = await fetch("https://eashwa-china-backend.vercel.app/api/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      console.log("Login Success:", data);
+
+      // ✅ Save user data to localStorage
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // ✅ Redirect to /cards
+      router.push("/cards");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -25,23 +53,21 @@ const Login = () => {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-          {/* Email or Username */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email or Username
             </label>
             <input
               type="text"
-              name="emailOrUsername"
+              name="email"
               placeholder="Enter email or username"
-              value={formData.emailOrUsername}
+              value={formData.email}
               onChange={handleChange}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
 
-          {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -57,7 +83,10 @@ const Login = () => {
             />
           </div>
 
-          {/* Submit Button */}
+          {error && (
+            <div className="text-red-600 text-sm text-center">{error}</div>
+          )}
+
           <button
             type="submit"
             className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2.5 rounded-md transition duration-300"
