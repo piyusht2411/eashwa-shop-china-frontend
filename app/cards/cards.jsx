@@ -45,7 +45,7 @@ const Cards = () => {
   return (
     <section className="py-12 px-6 bg-orange-50 min-h-screen">
       <div className="max-w-7xl mx-auto text-center mb-10">
-        <h2 className="text-4xl font-bold text-orange-800">Choose a Form</h2>
+        <h2 className="text-4xl font-bold text-orange-800">Choose any Form</h2>
         <p className="text-orange-600 mt-2">Click on a form to begin</p>
       </div>
 
