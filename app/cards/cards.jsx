@@ -2,28 +2,34 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
+import FileImage from "@/assets/png/file.png";
+import FileImage2 from "@/assets/png/file2.png";
+import FileImage3 from "@/assets/png/file3.png";
+import FileImage4 from "@/assets/png/file4.png";
+import FileImage5 from "@/assets/png/file5.png";
+
 const Cards = () => {
   const router = useRouter();
 
   const forms = [
     {
       name: "Form 1",
-  image: "https://images.unsplash.com/photo-1554224154-22dec7ec8818",
+      image: FileImage,
       link: "/clearance",
     },
     {
       name: "Form 2",
-  image: "https://images.unsplash.com/photo-1554224154-22dec7ec8818",
+      image: FileImage3,
       link: "/coming-soon",
     },
     {
       name: "Form 3",
-      image: "https://images.unsplash.com/photo-1554224154-22dec7ec8818",
+      image: FileImage2,
       link: "/coming-soon",
     },
     {
       name: "Form 4",
-image: "https://images.unsplash.com/photo-1554224154-22dec7ec8818",
+      image: FileImage5,
       link: "/coming-soon",
     },
   ];
@@ -42,16 +48,21 @@ image: "https://images.unsplash.com/photo-1554224154-22dec7ec8818",
             onClick={() => router.push(form.link)}
             className="cursor-pointer bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:bg-orange-100 hover:scale-105 transform transition duration-300"
           >
-            <div className="relative w-full h-60">
+            <div className="relative w-full aspect-[4/3] h-60 flex justify-center items-center">
               <Image
                 src={form.image}
                 alt={form.name}
-                layout="fill"
+                // layout="fill"
                 objectFit="cover"
+                className="object-cover"
+                width={230}
+                height={230}
               />
             </div>
             <div className="p-6 text-center">
-              <h3 className="text-2xl font-semibold text-orange-800">{form.name}</h3>
+              <h3 className="text-2xl font-semibold text-orange-800">
+                {form.name}
+              </h3>
             </div>
           </div>
         ))}
