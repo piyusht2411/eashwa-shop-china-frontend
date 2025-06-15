@@ -73,7 +73,7 @@ const Clearance = () => {
                 value={formData.piNumber}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
               />
             </div>
 
@@ -88,7 +88,7 @@ const Clearance = () => {
                 value={formData.igmNo}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
               />
             </div>
 
@@ -103,7 +103,7 @@ const Clearance = () => {
                 value={formData.boeNo}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
               />
             </div>
 
@@ -117,7 +117,7 @@ const Clearance = () => {
                 value={formData.dutyPaid}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
               >
                 <option value="">Select</option>
                 <option value="Yes">Yes</option>
@@ -136,7 +136,7 @@ const Clearance = () => {
                 value={formData.usdRateAtClearance}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
               />
             </div>
 
@@ -151,7 +151,7 @@ const Clearance = () => {
                 value={formData.clearanceDate}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
               />
             </div>
 

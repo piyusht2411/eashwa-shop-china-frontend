@@ -16,21 +16,29 @@ const Cards = () => {
       name: "Form 1",
       image: FileImage,
       link: "/clearance",
+      hoverBg: "hover:bg-orange-100",
+      textColor: "text-orange-800",
     },
     {
       name: "Form 2",
       image: FileImage3,
       link: "/coming-soon",
+      hoverBg: "hover:bg-blue-100",
+      textColor: "text-blue-800",
     },
     {
       name: "Form 3",
       image: FileImage2,
       link: "/coming-soon",
+      hoverBg: "hover:bg-cyan-100",
+      textColor: "text-cyan-800",
     },
     {
       name: "Form 4",
       image: FileImage5,
       link: "/coming-soon",
+      hoverBg: "hover:bg-red-300",
+      textColor: "text-red-800",
     },
   ];
 
@@ -46,13 +54,12 @@ const Cards = () => {
           <div
             key={index}
             onClick={() => router.push(form.link)}
-            className="cursor-pointer bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:bg-orange-100 hover:scale-105 transform transition duration-300"
+            className={`cursor-pointer bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl ${form.hoverBg} hover:scale-105 transform transition duration-300`}
           >
             <div className="relative w-full aspect-[4/3] h-60 flex justify-center items-center">
               <Image
                 src={form.image}
                 alt={form.name}
-                // layout="fill"
                 objectFit="cover"
                 className="object-cover"
                 width={230}
@@ -60,7 +67,7 @@ const Cards = () => {
               />
             </div>
             <div className="p-6 text-center">
-              <h3 className="text-2xl font-semibold text-orange-800">
+              <h3 className={`text-2xl font-semibold ${form.textColor}`}>
                 {form.name}
               </h3>
             </div>
