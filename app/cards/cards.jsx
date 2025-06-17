@@ -13,30 +13,30 @@ const Cards = () => {
 
   const forms = [
     {
-      name: "Form 1",
+      name: "PI Number",
       image: FileImage,
-      link: "/clearance",
+      link: "/pi-form",
       hoverBg: "hover:bg-orange-100",
       textColor: "text-orange-800",
     },
     {
-      name: "Form 2",
+      name: "Shipping Order-Freight Details",
       image: FileImage3,
-      link: "/coming-soon",
+      link: "/shipping",
       hoverBg: "hover:bg-blue-100",
       textColor: "text-blue-800",
     },
     {
-      name: "Form 3",
+      name: "Pi Finance",
       image: FileImage2,
-      link: "/coming-soon",
+      link: "/pi-finance",
       hoverBg: "hover:bg-cyan-100",
       textColor: "text-cyan-800",
     },
     {
-      name: "Form 4",
+      name: "IGM Details",
       image: FileImage5,
-      link: "/coming-soon",
+      link: "/clearance",
       hoverBg: "hover:bg-red-300",
       textColor: "text-red-800",
     },

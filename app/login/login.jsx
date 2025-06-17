@@ -31,17 +31,17 @@ const Login = () => {
       );
 
       const data = await response.json();
+      console.log("Login Response:", data);
 
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
 
-      console.log("Login Success:", data);
-
-      // ✅ Save user data to localStorage
+      // ✅ Save user & token correctly
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.authToken); // ✅ Use authToken
 
-      // ✅ Redirect to /cards
+      // ✅ Redirect after login
       router.push("/cards");
     } catch (err) {
       setError(err.message);
