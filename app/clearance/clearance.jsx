@@ -9,44 +9,82 @@ const Clearance = () => {
     dutyPaid: "",
     usdRateAtClearance: "",
     clearanceDate: "",
-    igmAttachment: null,
+    igmAttachment: "", // Now stores URL instead of file
   });
 
   const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value, files } = e.target;
 
-    if (name === "igmAttachment") {
-      setFormData({ ...formData, [name]: files[0] });
+    if (name === "igmAttachment" && files && files[0]) {
+      const file = files[0];
+      const fileData = new FormData();
+      fileData.append("file", file);
+
+      const token = localStorage.getItem("token");
+
+      try {
+        const uploadRes = await fetch(
+          "https://eashwa-china-backend.vercel.app/api/file/upload-pdf/",
+          {
+            method: "POST",
+            body: fileData,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!uploadRes.ok) throw new Error("File upload failed");
+
+        const uploadData = await uploadRes.json();
+        setFormData((prev) => ({
+          ...prev,
+          igmAttachment: uploadData.url || "",
+        }));
+      } catch (error) {
+        console.error("Upload error:", error);
+        alert("File upload failed");
+        setFormData((prev) => ({
+          ...prev,
+          igmAttachment: "",
+        }));
+      }
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formPayload = new FormData();
-    for (let key in formData) {
-      formPayload.append(key, formData[key]);
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch(
+        "https://eashwa-china-backend.vercel.app/api/formData/clearance",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await res.json();
+      if (res.ok) {
+        setSubmitted(true);
+        alert("IGM details submitted successfully!");
+      } else {
+        alert("Submission failed: " + (data.message || data.error));
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Something went wrong");
     }
-
-    // Simulate successful submission
-    console.log("Form Submitted ✅", formData);
-
-    // Reset the form
-    setFormData({
-      piNumber: "",
-      igmNo: "",
-      boeNo: "",
-      dutyPaid: "",
-      usdRateAtClearance: "",
-      clearanceDate: "",
-      igmAttachment: null,
-    });
-
-    setSubmitted(true);
   };
 
   return (
@@ -62,52 +100,30 @@ const Clearance = () => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-            {/* PI Number */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                PI Number
-              </label>
-              <input
-                type="text"
-                name="piNumber"
-                value={formData.piNumber}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
-              />
-            </div>
+            <InputField
+              label="PI Number"
+              name="piNumber"
+              value={formData.piNumber}
+              onChange={handleChange}
+              required
+            />
 
-            {/* IGM No */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                IGM No
-              </label>
-              <input
-                type="text"
-                name="igmNo"
-                value={formData.igmNo}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
-              />
-            </div>
+            <InputField
+              label="IGM No"
+              name="igmNo"
+              value={formData.igmNo}
+              onChange={handleChange}
+              required
+            />
 
-            {/* BOE No */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                BOE No
-              </label>
-              <input
-                type="text"
-                name="boeNo"
-                value={formData.boeNo}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
-              />
-            </div>
+            <InputField
+              label="BOE No"
+              name="boeNo"
+              value={formData.boeNo}
+              onChange={handleChange}
+              required
+            />
 
-            {/* Duty Paid Dropdown */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Duty Paid
@@ -117,45 +133,32 @@ const Clearance = () => {
                 value={formData.dutyPaid}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
+                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black"
               >
                 <option value="">Select</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
               </select>
             </div>
 
-            {/* USD Rate */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                USD Rate at Clearance
-              </label>
-              <input
-                type="number"
-                name="usdRateAtClearance"
-                value={formData.usdRateAtClearance}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
-              />
-            </div>
+            <InputField
+              label="USD Rate at Clearance"
+              name="usdRateAtClearance"
+              type="number"
+              value={formData.usdRateAtClearance}
+              onChange={handleChange}
+              required
+            />
 
-            {/* Clearance Date */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Clearance Date
-              </label>
-              <input
-                type="date"
-                name="clearanceDate"
-                value={formData.clearanceDate}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black placeholder-gray-300"
-              />
-            </div>
+            <InputField
+              label="Clearance Date"
+              name="clearanceDate"
+              type="date"
+              value={formData.clearanceDate}
+              onChange={handleChange}
+              required
+            />
 
-            {/* File Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 IGM Attachment (PDF)
@@ -168,9 +171,13 @@ const Clearance = () => {
                 required
                 className="w-full text-orange-600 file:mr-3 file:py-1.5 file:px-4 file:border file:rounded-md file:border-gray-300 file:text-sm file:bg-orange-100 hover:file:bg-orange-200 cursor-pointer"
               />
+              {formData.igmAttachment && (
+                <p className="text-xs text-green-700 mt-1">
+                  Uploaded: {formData.igmAttachment.split("/").pop()}
+                </p>
+              )}
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 rounded-md"
@@ -183,5 +190,21 @@ const Clearance = () => {
     </div>
   );
 };
+
+const InputField = ({ label, name, value, onChange, type = "text", required = false }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      {label}
+    </label>
+    <input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      required={required}
+      className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black"
+    />
+  </div>
+);
 
 export default Clearance;

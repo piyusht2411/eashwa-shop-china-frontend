@@ -26,19 +26,20 @@ const Cards = () => {
       hoverBg: "hover:bg-blue-100",
       textColor: "text-blue-800",
     },
-    {
-      name: "Pi Finance",
-      image: FileImage2,
-      link: "/pi-finance",
-      hoverBg: "hover:bg-cyan-100",
-      textColor: "text-cyan-800",
-    },
+    
     {
       name: "IGM Details",
       image: FileImage5,
       link: "/clearance",
       hoverBg: "hover:bg-red-300",
       textColor: "text-red-800",
+    },
+    {
+      name: "Transportation",
+      image: FileImage2,
+      link: "/transport",
+      hoverBg: "hover:bg-cyan-100",
+      textColor: "text-cyan-800",
     },
   ];
 
