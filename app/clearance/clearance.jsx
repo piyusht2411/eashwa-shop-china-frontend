@@ -9,7 +9,7 @@ const Clearance = () => {
     dutyPaid: "",
     usdRateAtClearance: "",
     clearanceDate: "",
-    igmAttachment: "", // Now stores URL instead of file
+    igmAttachment: "",
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -124,6 +124,7 @@ const Clearance = () => {
               required
             />
 
+            {/* Duty Paid Dropdown */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Duty Paid
@@ -141,14 +142,23 @@ const Clearance = () => {
               </select>
             </div>
 
-            <InputField
-              label="USD Rate at Clearance"
-              name="usdRateAtClearance"
-              type="number"
-              value={formData.usdRateAtClearance}
-              onChange={handleChange}
-              required
-            />
+            {/* Currency Rate Dropdown (USD/CNY) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                USD Rate at Clearance
+              </label>
+              <select
+                name="usdRateAtClearance"
+                value={formData.usdRateAtClearance}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black"
+              >
+                <option value="">Select Currency</option>
+                <option value="USD">USD</option>
+                <option value="CNY">CNY</option>
+              </select>
+            </div>
 
             <InputField
               label="Clearance Date"
@@ -159,6 +169,7 @@ const Clearance = () => {
               required
             />
 
+            {/* File Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 IGM Attachment (PDF)
@@ -191,7 +202,14 @@ const Clearance = () => {
   );
 };
 
-const InputField = ({ label, name, value, onChange, type = "text", required = false }) => (
+const InputField = ({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+}) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-1">
       {label}

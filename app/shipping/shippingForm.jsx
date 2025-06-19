@@ -50,15 +50,34 @@ export default function ShippingForm({ data, setData, onSubmit }) {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input label="PI Number" name="piNumber" value={shipping.piNumber} onChange={handleChange} required />
-        <Input label="Bill of Lading No." name="billOfLadingNo" value={shipping.billOfLadingNo} onChange={handleChange} />
-        <Input label="Invoice No." name="invoiceNo" value={shipping.invoiceNo} onChange={handleChange} />
-        <Input label="Vessel No." name="vesselNo" value={shipping.vesselNo} onChange={handleChange} />
-        <Input label="Ship No." name="shipNo" value={shipping.shipNo} onChange={handleChange} />
-        <Input label="Container No." name="containerNo" value={shipping.containerNo} onChange={handleChange} />
-        <Input label="ETA" name="eta" type="date" value={shipping.eta} onChange={handleChange} />
-        <FileInput label="Bill of Lading Attachment" name="billOfLadingAttachment" fileUrl={shipping.billOfLadingAttachment} onChange={handleChange} />
-        <FileInput label="Invoice Attachment" name="invoiceAttachment" fileUrl={shipping.invoiceAttachment} onChange={handleChange} />
+        <Input label="PI Number" name="piNumber" value={shipping.piNumber} onChange={handleChange} required 
+        
+        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        />
+        <Input label="Bill of Lading No." name="billOfLadingNo" value={shipping.billOfLadingNo} onChange={handleChange} 
+       className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black" 
+        />
+        <Input label="Invoice No." name="invoiceNo" value={shipping.invoiceNo} onChange={handleChange} 
+        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        />
+        <Input label="Vessel No." name="vesselNo" value={shipping.vesselNo} onChange={handleChange} 
+        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        />
+        <Input label="Ship No." name="shipNo" value={shipping.shipNo} onChange={handleChange} 
+        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        />
+        <Input label="Container No." name="containerNo" value={shipping.containerNo} onChange={handleChange}
+        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        />
+        <Input label="ETA" name="eta" type="date" value={shipping.eta} onChange={handleChange} 
+        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        />
+        <FileInput label="Bill of Lading Attachment" name="billOfLadingAttachment" fileUrl={shipping.billOfLadingAttachment} onChange={handleChange} 
+        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        />
+        <FileInput label="Invoice Attachment" name="invoiceAttachment" fileUrl={shipping.invoiceAttachment} onChange={handleChange} 
+        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        />
       </div>
 
       <button
@@ -81,7 +100,7 @@ function Input({ label, name, value, onChange, type = "text", required = false }
         value={value}
         onChange={onChange}
         required={required}
-        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500"
+        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
       />
     </div>
   );

@@ -43,6 +43,7 @@ export default function PiFinanceForm({ data, setData, onNext }) {
           value={piFinance.piNumber}
           onChange={handleChange}
           required
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
 
         <Input
@@ -51,6 +52,7 @@ export default function PiFinanceForm({ data, setData, onNext }) {
           name="financeDate"
           value={piFinance.financeDate}
           onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
 
         <SelectInput
@@ -59,6 +61,7 @@ export default function PiFinanceForm({ data, setData, onNext }) {
           value={piFinance.financeRate}
           options={currencyOptions.map((c) => ({ value: c, label: c }))}
           onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
 
         <SelectInput
@@ -67,6 +70,7 @@ export default function PiFinanceForm({ data, setData, onNext }) {
           value={piFinance.shippingVendor}
           options={vendorOptions.map((v) => ({ value: v, label: v }))}
           onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
 
         <Input
@@ -75,6 +79,7 @@ export default function PiFinanceForm({ data, setData, onNext }) {
           type="number"
           value={piFinance.amount}
           onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
       </div>
 
