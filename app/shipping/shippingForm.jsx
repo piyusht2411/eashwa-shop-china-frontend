@@ -5,7 +5,10 @@ export default function ShippingForm({ data, setData, onSubmit }) {
   const handleChange = async (e) => {
     const { name, value, files } = e.target;
 
-    if ((name === "billOfLadingAttachment" || name === "invoiceAttachment") && files?.[0]) {
+    if (
+      (name === "billOfLadingAttachment" || name === "invoiceAttachment") &&
+      files?.[0]
+    ) {
       const file = files[0];
       const formData = new FormData();
       formData.append("file", file);
@@ -13,18 +16,21 @@ export default function ShippingForm({ data, setData, onSubmit }) {
       const token = localStorage.getItem("token");
 
       try {
-        const res = await fetch("https://eashwa-china-backend.vercel.app/api/file/upload-pdf/", {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await fetch(
+          "https://eashwa-china-backend.vercel.app/api/file/upload-pdf/",
+          {
+            method: "POST",
+            body: formData,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const result = await res.json();
         setData((prev) => ({
           ...prev,
-          shipping: { ...prev.shipping, [name]: result.url || "" },
+          shipping: { ...prev.shipping, [name]: result.fileUrl || "" },
         }));
       } catch {
         alert("File upload failed");
@@ -50,33 +56,70 @@ export default function ShippingForm({ data, setData, onSubmit }) {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input label="PI Number" name="piNumber" value={shipping.piNumber} onChange={handleChange} required 
-        
-        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        <Input
+          label="PI Number"
+          name="piNumber"
+          value={shipping.piNumber}
+          onChange={handleChange}
+          required
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
-        <Input label="Bill of Lading No." name="billOfLadingNo" value={shipping.billOfLadingNo} onChange={handleChange} 
-       className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black" 
+        <Input
+          label="Bill of Lading No."
+          name="billOfLadingNo"
+          value={shipping.billOfLadingNo}
+          onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
-        <Input label="Invoice No." name="invoiceNo" value={shipping.invoiceNo} onChange={handleChange} 
-        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        <Input
+          label="Invoice No."
+          name="invoiceNo"
+          value={shipping.invoiceNo}
+          onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
-        <Input label="Vessel No." name="vesselNo" value={shipping.vesselNo} onChange={handleChange} 
-        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        <Input
+          label="Vessel No."
+          name="vesselNo"
+          value={shipping.vesselNo}
+          onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
-        <Input label="Ship No." name="shipNo" value={shipping.shipNo} onChange={handleChange} 
-        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        <Input
+          label="Ship No."
+          name="shipNo"
+          value={shipping.shipNo}
+          onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
-        <Input label="Container No." name="containerNo" value={shipping.containerNo} onChange={handleChange}
-        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        <Input
+          label="Container No."
+          name="containerNo"
+          value={shipping.containerNo}
+          onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
-        <Input label="ETA" name="eta" type="date" value={shipping.eta} onChange={handleChange} 
-        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        <Input
+          label="ETA"
+          name="eta"
+          type="date"
+          value={shipping.eta}
+          onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
-        <FileInput label="Bill of Lading Attachment" name="billOfLadingAttachment" fileUrl={shipping.billOfLadingAttachment} onChange={handleChange} 
-        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        <FileInput
+          label="Bill of Lading Attachment"
+          name="billOfLadingAttachment"
+          fileUrl={shipping.billOfLadingAttachment}
+          onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
-        <FileInput label="Invoice Attachment" name="invoiceAttachment" fileUrl={shipping.invoiceAttachment} onChange={handleChange} 
-        className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
+        <FileInput
+          label="Invoice Attachment"
+          name="invoiceAttachment"
+          fileUrl={shipping.invoiceAttachment}
+          onChange={handleChange}
+          className="border border-orange-300 rounded px-3 py-2 focus:outline-orange-500 text-black"
         />
       </div>
 
@@ -90,7 +133,14 @@ export default function ShippingForm({ data, setData, onSubmit }) {
   );
 }
 
-function Input({ label, name, value, onChange, type = "text", required = false }) {
+function Input({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+}) {
   return (
     <div className="flex flex-col">
       <label className="mb-1 font-medium text-orange-700">{label}</label>

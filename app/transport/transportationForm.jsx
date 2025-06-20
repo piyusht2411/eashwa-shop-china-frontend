@@ -39,7 +39,7 @@ export default function TransportationForm() {
         const uploadData = await uploadRes.json();
         setFormData((prev) => ({
           ...prev,
-          attachedmentEWayBill: uploadData.url || "",
+          attachedmentEWayBill: uploadData.fileUrl || "",
         }));
       } catch (err) {
         console.error("Upload error:", err);
@@ -147,7 +147,14 @@ export default function TransportationForm() {
   );
 }
 
-function Input({ label, name, value, onChange, type = "text", required = false }) {
+function Input({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+}) {
   return (
     <div className="flex flex-col">
       <label className="mb-1 font-medium text-orange-700">{label}</label>

@@ -41,7 +41,7 @@ const Clearance = () => {
         const uploadData = await uploadRes.json();
         setFormData((prev) => ({
           ...prev,
-          igmAttachment: uploadData.url || "",
+          igmAttachment: uploadData.fileUrl || "",
         }));
       } catch (error) {
         console.error("Upload error:", error);

@@ -45,7 +45,7 @@ export default function PiForm() {
         const uploadData = await uploadRes.json();
         setFormData((prev) => ({
           ...prev,
-          attachment: uploadData.url || "",
+          attachment: uploadData.fileUrl || "",
         }));
       } catch (error) {
         console.error("File upload error:", error);
@@ -96,7 +96,9 @@ export default function PiForm() {
       if (res.ok) {
         setSubmitted(true);
       } else {
-        alert("Submission failed: " + (responseData.error || responseData.message));
+        alert(
+          "Submission failed: " + (responseData.error || responseData.message)
+        );
       }
     } catch (error) {
       console.error("Error:", error);
@@ -121,8 +123,20 @@ export default function PiForm() {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input label="PI Number" name="piNumber" value={formData.piNumber} onChange={handleChange} required />
-              <Input type="date" label="Date" name="date" value={formData.date} onChange={handleChange} />
+              <Input
+                label="PI Number"
+                name="piNumber"
+                value={formData.piNumber}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                type="date"
+                label="Date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+              />
 
               <SelectInput
                 label="Vendor"
@@ -138,8 +152,19 @@ export default function PiForm() {
                 ]}
               />
 
-              <Input label="Pieces" name="pieces" value={formData.pieces} onChange={handleChange} type="number" />
-              <Input label="Model" name="model" value={formData.model} onChange={handleChange} />
+              <Input
+                label="Pieces"
+                name="pieces"
+                value={formData.pieces}
+                onChange={handleChange}
+                type="number"
+              />
+              <Input
+                label="Model"
+                name="model"
+                value={formData.model}
+                onChange={handleChange}
+              />
 
               <SelectInput
                 label="Currency Rate"
@@ -166,7 +191,9 @@ export default function PiForm() {
 
               {/* File Upload */}
               <div className="flex flex-col col-span-full">
-                <label className="mb-1 font-medium text-orange-700">Attachment</label>
+                <label className="mb-1 font-medium text-orange-700">
+                  Attachment
+                </label>
                 <div className="flex items-center space-x-4">
                   <label
                     htmlFor="attachment-input"
@@ -183,7 +210,9 @@ export default function PiForm() {
                     accept="application/pdf"
                   />
                   <span className="text-gray-500">
-                    {formData.attachment ? formData.attachment.split("/").pop() : "No file chosen"}
+                    {formData.attachment
+                      ? formData.attachment.split("/").pop()
+                      : "No file chosen"}
                   </span>
                 </div>
               </div>
@@ -202,7 +231,14 @@ export default function PiForm() {
   );
 }
 
-function Input({ label, name, value, onChange, type = "text", required = false }) {
+function Input({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+}) {
   return (
     <div className="flex flex-col">
       <label className="mb-1 font-medium text-orange-700">{label}</label>
