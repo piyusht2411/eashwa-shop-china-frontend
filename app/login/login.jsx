@@ -8,6 +8,7 @@ const Login = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -17,6 +18,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     try {
       const response = await fetch(
@@ -31,26 +33,35 @@ const Login = () => {
       );
 
       const data = await response.json();
-      console.log("Login Response:", data);
 
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
 
-      // ✅ Save user & token correctly
       localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("token", data.authToken); // ✅ Use authToken
+      localStorage.setItem("token", data.authToken);
+      localStorage.setItem("isLoggedIn", "true");
 
-      // ✅ Redirect after login
       router.push("/cards");
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-orange-50 to-orange-100 flex items-center justify-center px-2">
-      <div className="w-full max-w-sm sm:max-w-md bg-white p-6 sm:p-8 rounded-xl shadow-xl">
+    <div className="min-h-screen bg-gradient-to-r from-orange-50 to-orange-100 flex items-center justify-center px-2 relative">
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-10 opacity-75">
+          <div className="flex flex-col items-center">
+            <div className="w-10 h-10 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-2 text-sm text-gray-700">Logging in...</p>
+          </div>
+        </div>
+      )}
+      <div className="w-full max-w-sm sm:max-w-md bg-white p-6 sm:p-8 rounded-xl shadow-xl relative">
         <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-600 mb-6 sm:mb-8">
           Login to Your Account
         </h2>
@@ -67,7 +78,8 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-black placeholder-gray-300"
+              disabled={isLoading}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-black placeholder-gray-300 disabled:opacity-50"
             />
           </div>
 
@@ -82,7 +94,8 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-black placeholder-gray-300"
+              disabled={isLoading}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-black placeholder-gray-300 disabled:opacity-50"
             />
           </div>
 
@@ -92,9 +105,10 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2.5 rounded-md transition duration-300"
+            disabled={isLoading}
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2.5 rounded-md transition duration-300 disabled:bg-orange-400 disabled:cursor-not-allowed"
           >
-            Login
+            {isLoading ? "Processing..." : "Login"}
           </button>
         </form>
       </div>
