@@ -2,11 +2,11 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-import FileImage from "@/assets/png/file.png";
-import FileImage2 from "@/assets/png/file2.png";
-import FileImage3 from "@/assets/png/file3.png";
-import FileImage4 from "@/assets/png/file4.png";
-import FileImage5 from "@/assets/png/file5.png";
+import FileImage from "../../assets/png/file.png";
+import FileImage2 from "../../assets/png/file2.png";
+import FileImage3 from "../../assets/png/file3.png";
+import FileImage4 from "../../assets/png/file4.png";
+import FileImage5 from "../../assets/png/file5.png";
 
 const Cards = () => {
   const router = useRouter();
