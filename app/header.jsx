@@ -9,12 +9,12 @@ const Header = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    setIsLoggedIn(!!user);
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    setIsLoggedIn(isLoggedIn);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("isLoggedIn");
     setIsLoggedIn(false);
     router.push("/");
   };
@@ -24,7 +24,11 @@ const Header = () => {
       <header className="flex items-center justify-between px-4 sm:px-8 py-4">
         {/* Logo */}
         <Link href={isLoggedIn ? "/cards" : "/"}>
-          <img src="/logo.png" alt="logo" className="w-16 h-12 cursor-pointer" />
+          <img
+            src="/logo.png"
+            alt="logo"
+            className="w-16 h-12 cursor-pointer"
+          />
         </Link>
 
         {/* Right Side - Login / Logout */}
