@@ -91,7 +91,7 @@ const Clearance = () => {
     <div className="bg-orange-50 py-6 px-3 min-h-screen flex items-center justify-center">
       <div className="w-full max-w-sm sm:max-w-md bg-white p-5 sm:p-6 rounded-lg shadow-md">
         <h2 className="text-xl sm:text-2xl font-semibold text-center text-orange-600 mb-4">
-          IGM Details Form
+          BOE Form
         </h2>
 
         {submitted ? (

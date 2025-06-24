@@ -59,7 +59,6 @@ const useApiCall = () => {
       });
       if (!response.ok) {
         if (response.status === 401) {
-          // Handle unauthorized error (e.g., invalid or expired token)
           localStorage.removeItem("authToken");
           throw new Error("Unauthorized: Please login again");
         }
@@ -403,7 +402,8 @@ const PiDetails = () => {
   }, []);
 
   const handleExportCSV = useCallback(() => {
-    const csvData = piDetails.map((detail) => ({
+    const csvData = piDetails.map((detail, index) => ({
+      "SR No.": (currentPage - 1) * itemsPerPage + index + 1,
       "PI Number": detail.piNumber || "-",
       Date: formatDate(detail.date),
       Vendor: detail.detailVendor || "-",
@@ -428,7 +428,7 @@ const PiDetails = () => {
     );
     link.click();
     URL.revokeObjectURL(url);
-  }, [piDetails]);
+  }, [piDetails, currentPage, itemsPerPage]);
 
   const handleRefresh = useCallback(() => {
     fetchPiDetails();
@@ -564,6 +564,7 @@ const PiDetails = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-orange-200">
+                      <TableHeader>SR No.</TableHeader>
                       <TableHeader>PI Number</TableHeader>
                       <TableHeader>Date</TableHeader>
                       <TableHeader>Vendor</TableHeader>
@@ -571,7 +572,7 @@ const PiDetails = () => {
                       <TableHeader>Model</TableHeader>
                       <TableHeader>Rate</TableHeader>
                       <TableHeader>Exchange Rate</TableHeader>
-                      <TableHeader>Current Rate</TableHeader>
+                      <TableHeader>Rate Per Piece</TableHeader>
                       <TableHeader>Advance Amount</TableHeader>
                       <TableHeader>Serial Number</TableHeader>
                       <TableHeader>Attachment</TableHeader>
@@ -583,6 +584,9 @@ const PiDetails = () => {
                         key={detail.piNumber || index}
                         className="hover:bg-orange-50 transition-colors"
                       >
+                        <TableCell className="font-medium">
+                          {(currentPage - 1) * itemsPerPage + index + 1}
+                        </TableCell>
                         <TableCell className="font-medium text-orange-600">
                           {detail.piNumber || "-"}
                         </TableCell>

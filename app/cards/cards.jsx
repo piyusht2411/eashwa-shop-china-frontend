@@ -28,7 +28,7 @@ const Cards = () => {
     },
     
     {
-      name: "IGM Details",
+      name: "BOE Details",
       image: FileImage5,
       link: "/clearance",
       hoverBg: "hover:bg-red-300",

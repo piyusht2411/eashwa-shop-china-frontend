@@ -246,7 +246,7 @@ export default function PiForm() {
 
           <div className="flex flex-col">
             <label className="mb-1 font-medium text-orange-700">
-              Current Rate
+              Rate Per Piece
             </label>
             <div className="flex items-center space-x-2">
               <select

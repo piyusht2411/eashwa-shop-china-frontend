@@ -16,7 +16,7 @@ export const metadata = {
   title: "Eashwa-Shop",
   description: "",
   icons:{
-    icon:"/favicon.ico",
+    icon:"./favicon.ico",
 
   }
 };
