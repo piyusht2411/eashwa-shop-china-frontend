@@ -123,9 +123,11 @@ export default function PiForm() {
         toast.success("PI Details submitted successfully!");
         resetForm();
       } else {
-        toast.error(
-          `Submission failed: ${responseData.error || responseData.message}`
-        );
+        const errorMsg =
+          responseData?.error ||
+          responseData?.message ||
+          "Something went wrong. Please try again.";
+        toast.error(`Submission failed: ${errorMsg}`);
       }
     } catch (error) {
       console.error("Error:", error);
