@@ -9,6 +9,7 @@ export default function PiFinanceForm({ data, setData, onNext }) {
     "WUXI FLYER TECHNOLYGE CO.Ltd",
     "WUXI TIANKANG Electrical Technology Co. ,LTD",
     "BALING MOTORCYCLE(WUXI) CO.,LTD.",
+    "ZHEJIANG CHAOWEI IMPORT AND EXPORT CO., LTD",
   ];
 
   const handleChange = (e) => {
@@ -93,7 +94,14 @@ export default function PiFinanceForm({ data, setData, onNext }) {
   );
 }
 
-function Input({ label, name, value, onChange, type = "text", required = false }) {
+function Input({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+}) {
   return (
     <div className="flex flex-col">
       <label className="mb-1 font-medium text-orange-700">{label}</label>

@@ -198,6 +198,7 @@ export default function PiForm() {
               "WUXI FLYER TECHNOLYGE CO.Ltd",
               "WUXI TIANKANG Electrical Technology Co. ,LTD",
               "BALING MOTORCYCLE(WUXI) CO.,LTD.",
+              "ZHEJIANG CHAOWEI IMPORT AND EXPORT CO., LTD",
             ]}
           />
 
