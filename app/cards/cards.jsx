@@ -26,7 +26,6 @@ const Cards = () => {
       hoverBg: "hover:bg-blue-100",
       textColor: "text-blue-800",
     },
-    
     {
       name: "BOE Details",
       image: FileImage5,
@@ -44,10 +43,32 @@ const Cards = () => {
   ];
 
   return (
-    <section className="py-12 px-6 bg-orange-50 min-h-screen">
+    <section className="py-12 px-6 bg-orange-50 min-h-screen relative">
       <div className="max-w-7xl mx-auto text-center mb-10">
         <h2 className="text-4xl font-bold text-orange-800">Choose a Form</h2>
         <p className="text-orange-600 mt-2">Click on a form to begin</p>
+      </div>
+
+      <div className="absolute top-6 right-6">
+        <button
+          onClick={() => router.push("/search")}
+          className="px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition duration-300 flex items-center gap-2"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          Search
+        </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
@@ -55,7 +76,7 @@ const Cards = () => {
           <div
             key={index}
             onClick={() => router.push(form.link)}
-            className={`cursor-pointer bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl ${form.hoverBg} hover:scale-105 transform transition duration-300`}
+            className={`cursor-pointer bg-white rounded-2xl overflow-hidden shadow-xl ${form.hoverBg} hover:scale-105 transform transition duration-300`}
           >
             <div className="relative w-full aspect-[4/3] h-60 flex justify-center items-center">
               <Image

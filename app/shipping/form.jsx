@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
+import toast, { Toaster } from "react-hot-toast";
 import PiFinanceForm from "./piFinanceForm";
 import ShippingForm from "./shippingForm";
 
@@ -47,20 +49,33 @@ export default function CombinedFormPage() {
         }
       );
 
+      const responseData = await res.json();
       if (res.ok) {
-        setSubmitted(true); // show success message
+        setSubmitted(true); // Show success message
+        toast.success("Shipping and Finance details submitted successfully!");
       } else {
-        const result = await res.json();
-        alert("Submission failed: " + (result.error || result.message));
+        const errorMsg =
+          responseData?.error ||
+          responseData?.message ||
+          "Something went wrong. Please try again.";
+        toast.error(`Submission failed: ${errorMsg}`);
       }
     } catch (err) {
       console.error("Error:", err);
-      alert("Something went wrong");
+      toast.error("An error occurred during submission");
     }
   };
 
   return (
-    <div className="min-h-screen bg-orange-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-orange-50 flex items-center justify-center p-4 relative">
+      <Toaster position="top-right" reverseOrder={false} />
+
+      <Link href="/shipping-details">
+        <button className="absolute top-4 right-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+          View Shipping Details
+        </button>
+      </Link>
+
       {submitted ? (
         <p className="text-green-600 font-semibold text-center text-xl">
           ✅ Shipping and Finance details submitted successfully!

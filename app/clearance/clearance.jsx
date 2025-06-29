@@ -1,23 +1,41 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
+import toast, { Toaster } from "react-hot-toast";
 
 const Clearance = () => {
   const [formData, setFormData] = useState({
     piNumber: "",
-    igmNo: "",
     boeNo: "",
     dutyPaid: "",
-    usdRateAtClearance: "",
+    dutyAmout: "",
+    usdRateAtClearance: "USD", // Default to USD
     clearanceDate: "",
     igmAttachment: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  const resetForm = () => {
+    setFormData({
+      piNumber: "",
+      boeNo: "",
+      dutyPaid: "",
+      dutyAmout: "",
+      usdRateAtClearance: "USD",
+      clearanceDate: "",
+      igmAttachment: "",
+    });
+    setSubmitted(false);
+  };
 
   const handleChange = async (e) => {
     const { name, value, files } = e.target;
 
     if (name === "igmAttachment" && files && files[0]) {
+      setIsUploading(true);
       const file = files[0];
       const fileData = new FormData();
       fileData.append("file", file);
@@ -39,25 +57,55 @@ const Clearance = () => {
         if (!uploadRes.ok) throw new Error("File upload failed");
 
         const uploadData = await uploadRes.json();
+        if (!uploadData.fileUrl || typeof uploadData.fileUrl !== "string") {
+          throw new Error("Invalid file URL received");
+        }
         setFormData((prev) => ({
           ...prev,
-          igmAttachment: uploadData.fileUrl || "",
+          igmAttachment: uploadData.fileUrl,
         }));
+        toast.success("File uploaded successfully!");
       } catch (error) {
         console.error("Upload error:", error);
-        alert("File upload failed");
+        toast.error("File upload failed");
         setFormData((prev) => ({
           ...prev,
           igmAttachment: "",
         }));
+      } finally {
+        setIsUploading(false);
       }
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.piNumber) {
+      toast.error("PI Number is required");
+      return;
+    }
+    if (!["USD", "CNY"].includes(formData.usdRateAtClearance)) {
+      toast.error("Invalid currency rate");
+      return;
+    }
+    if (!formData.dutyPaid || !["true", "false"].includes(formData.dutyPaid)) {
+      toast.error("Duty Paid status is required");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const jsonData = {
+      ...formData,
+      dutyPaid: formData.dutyPaid === "true",
+      dutyAmout: formData.dutyAmout ? parseFloat(formData.dutyAmout) : null,
+      clearanceDate: formData.clearanceDate ? new Date(formData.clearanceDate) : null,
+    };
 
     const token = localStorage.getItem("token");
 
@@ -70,36 +118,69 @@ const Clearance = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(jsonData),
         }
       );
 
       const data = await res.json();
       if (res.ok) {
         setSubmitted(true);
-        alert("IGM details submitted successfully!");
+        toast.success("Clearance details submitted successfully!");
+        setTimeout(resetForm, 3000); // Reset after 3 seconds
       } else {
-        alert("Submission failed: " + (data.message || data.error));
+        toast.error(`Submission failed: ${data.message || data.error || "Something went wrong"}`);
       }
     } catch (err) {
       console.error("Error:", err);
-      alert("Something went wrong");
+      toast.error("Something went wrong");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="bg-orange-50 py-6 px-3 min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-sm sm:max-w-md bg-white p-5 sm:p-6 rounded-lg shadow-md">
-        <h2 className="text-xl sm:text-2xl font-semibold text-center text-orange-600 mb-4">
-          BOE Form
+    <div className="bg-orange-50 py-6 px-3 min-h-screen flex items-center justify-center relative">
+      <Toaster position="top-right" reverseOrder={false} />
+
+      {isUploading && (
+        <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 opacity-75">
+          <div className="flex items-center justify-center bg-white rounded-xl p-8">
+            <div className="relative">
+              <div className="w-12 h-12 border-4 border-orange-200 rounded-full animate-spin border-t-orange-500"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-6 h-6 bg-orange-500 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            <span className="ml-3 text-orange-600 font-medium">
+              Uploading PDF...
+            </span>
+          </div>
+        </div>
+      )}
+
+      <Link href="/clearance-details">
+        <button className="absolute top-4 right-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+          View Clearance Details
+        </button>
+      </Link>
+
+      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg border border-orange-200">
+        <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">
+          Clearance Form
         </h2>
 
         {submitted ? (
           <div className="text-center text-green-600 font-semibold text-lg py-8">
-            🎉 Thank you for submitting!
+            🎉 Thank you for submitting! Form will reset soon...
+            <button
+              onClick={resetForm}
+              className="mt-4 bg-orange-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-orange-600 transition"
+            >
+              Reset Now
+            </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <InputField
               label="PI Number"
               name="piNumber"
@@ -109,24 +190,14 @@ const Clearance = () => {
             />
 
             <InputField
-              label="IGM No"
-              name="igmNo"
-              value={formData.igmNo}
-              onChange={handleChange}
-              required
-            />
-
-            <InputField
               label="BOE No"
               name="boeNo"
               value={formData.boeNo}
               onChange={handleChange}
-              required
             />
 
-            {/* Duty Paid Dropdown */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-orange-700 mb-1">
                 Duty Paid
               </label>
               <select
@@ -134,7 +205,7 @@ const Clearance = () => {
                 value={formData.dutyPaid}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black"
+                className="w-full px-3 py-2 border border-orange-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-black"
               >
                 <option value="">Select</option>
                 <option value="true">Yes</option>
@@ -142,9 +213,16 @@ const Clearance = () => {
               </select>
             </div>
 
-            {/* Currency Rate Dropdown (USD/CNY) */}
+            <InputField
+              label="Duty Amount"
+              name="dutyAmout"
+              value={formData.dutyAmout}
+              onChange={handleChange}
+              type="number"
+            />
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-orange-700 mb-1">
                 USD Rate at Clearance
               </label>
               <select
@@ -152,11 +230,13 @@ const Clearance = () => {
                 value={formData.usdRateAtClearance}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black"
+                className="w-full px-3 py-2 border border-orange-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-black"
               >
-                <option value="">Select Currency</option>
-                <option value="USD">USD</option>
-                <option value="CNY">CNY</option>
+                {["USD", "CNY"].map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -169,31 +249,47 @@ const Clearance = () => {
               required
             />
 
-            {/* File Upload */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="flex flex-col">
+              <label className="block text-sm font-medium text-orange-700 mb-1">
                 IGM Attachment (PDF)
               </label>
-              <input
-                type="file"
-                name="igmAttachment"
-                accept="application/pdf"
-                onChange={handleChange}
-                required
-                className="w-full text-orange-600 file:mr-3 file:py-1.5 file:px-4 file:border file:rounded-md file:border-gray-300 file:text-sm file:bg-orange-100 hover:file:bg-orange-200 cursor-pointer"
-              />
-              {formData.igmAttachment && (
-                <p className="text-xs text-green-700 mt-1">
-                  Uploaded: {formData.igmAttachment.split("/").pop()}
-                </p>
-              )}
+              <div className="flex items-center space-x-4">
+                <label
+                  htmlFor="igmAttachment-input"
+                  className={`bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg cursor-pointer hover:bg-orange-300 transition ${
+                    isUploading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  Choose File
+                </label>
+                <input
+                  id="igmAttachment-input"
+                  type="file"
+                  name="igmAttachment"
+                  accept="application/pdf"
+                  onChange={handleChange}
+                  required={!formData.igmAttachment}
+                  disabled={isUploading}
+                  className="hidden"
+                />
+                <span className="text-gray-500">
+                  {formData.igmAttachment
+                    ? formData.igmAttachment.split("/").pop()
+                    : "No file chosen"}
+                </span>
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 rounded-md"
+              disabled={isSubmitting || isUploading}
+              className={`w-full bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg transition ${
+                isSubmitting || isUploading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-orange-600"
+              }`}
             >
-              Submit
+              {isSubmitting ? "Submitting..." : "Submit"}
             </button>
           </form>
         )}
@@ -211,16 +307,14 @@ const InputField = ({
   required = false,
 }) => (
   <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-      {label}
-    </label>
+    <label className="block text-sm font-medium text-orange-700 mb-1">{label}</label>
     <input
       type={type}
       name={name}
       value={value}
       onChange={onChange}
       required={required}
-      className="w-full px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm text-black"
+      className="w-full px-3 py-2 border border-orange-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-black"
     />
   </div>
 );
