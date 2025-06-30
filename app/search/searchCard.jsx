@@ -79,7 +79,11 @@ const formatDate = (dateString) => {
 const formatDutyPaid = (dutyPaid) => {
   if (dutyPaid === undefined || dutyPaid === null) return "-";
   if (typeof dutyPaid === "string") {
-    return dutyPaid.toLowerCase() === "true" ? "Yes" : dutyPaid.toLowerCase() === "false" ? "No" : "-";
+    return dutyPaid.toLowerCase() === "true"
+      ? "Yes"
+      : dutyPaid.toLowerCase() === "false"
+      ? "No"
+      : "-";
   }
   return dutyPaid ? "Yes" : "No";
 };
@@ -237,6 +241,7 @@ const SearchCard = () => {
     clearanceDetails: [],
     transportationDetails: [],
   });
+  const [hasSearched, setHasSearched] = useState(false); // New state to track search
   const { makeRequest, loading, error } = useApiCall();
 
   useEffect(() => {
@@ -246,7 +251,11 @@ const SearchCard = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchValue.trim()) {
-      toast.error(`Please enter a valid ${searchType === "piNumber" ? "PI Number" : "BOE Number"}`);
+      toast.error(
+        `Please enter a valid ${
+          searchType === "piNumber" ? "PI Number" : "BOE Number"
+        }`
+      );
       return;
     }
 
@@ -266,9 +275,11 @@ const SearchCard = () => {
         clearanceDetails: data.clearanceDetails || [],
         transportationDetails: data.transportationDetails || [],
       });
+      setHasSearched(true); // Set hasSearched to true after successful search
       toast.success("Search completed successfully!");
     } catch (err) {
       console.error("Search error:", err);
+      setHasSearched(true); // Still show tables on error
       toast.error(err.message || "Failed to fetch search results");
     }
   };
@@ -330,7 +341,10 @@ const SearchCard = () => {
 
           {/* Search Form */}
           <div className="px-8 py-6 border-b border-orange-200">
-            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
+            <form
+              onSubmit={handleSearch}
+              className="flex flex-col sm:flex-row gap-4"
+            >
               <div className="flex-1">
                 <select
                   value={searchType}
@@ -349,7 +363,9 @@ const SearchCard = () => {
                   type="text"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder={`Enter ${searchType === "piNumber" ? "PI Number" : "BOE Number"}`}
+                  placeholder={`Enter ${
+                    searchType === "piNumber" ? "PI Number" : "BOE Number"
+                  }`}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-black"
                 />
               </div>
@@ -357,7 +373,9 @@ const SearchCard = () => {
                 type="submit"
                 disabled={loading}
                 className={`px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg transition ${
-                  loading ? "opacity-50 cursor-not-allowed" : "hover:bg-orange-600"
+                  loading
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-orange-600"
                 }`}
               >
                 Search
@@ -373,10 +391,10 @@ const SearchCard = () => {
               </div>
             ) : loading ? (
               <LoadingSpinner />
-            ) : (
+            ) : hasSearched ? (
               <div className="overflow-x-auto">
                 {/* PI Details Table */}
-                {searchResults.piDetails?.length > 0 && (
+                {searchType === "piNumber" && (
                   <div className="p-6">
                     <h3 className="text-lg font-semibold text-orange-600 mb-4">
                       PI Details
@@ -399,40 +417,62 @@ const SearchCard = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
-                        {searchResults.piDetails.map((detail, index) => (
-                          <tr
-                            key={detail.piNumber || index}
-                            className="hover:bg-orange-50 transition-colors"
-                          >
-                            <TableCell className="font-medium">
-                              {index + 1}
-                            </TableCell>
-                            <TableCell className="font-medium text-orange-600">
-                              {detail.piNumber || "-"}
-                            </TableCell>
-                            <TableCell>{formatDate(detail.date)}</TableCell>
-                            <TableCell>
-                              {truncateText(detail.detailVendor)}
-                            </TableCell>
-                            <TableCell>{detail.pieces || "-"}</TableCell>
-                            <TableCell>{detail.model || "-"}</TableCell>
-                            <TableCell>{detail.detailRate || "-"}</TableCell>
-                            <TableCell>{formatCurrency(detail.detailExchangeRate)}</TableCell>
-                            <TableCell>{formatCurrency(detail.detailCurrentRate)}</TableCell>
-                            <TableCell>{formatCurrency(detail.advanceAmount)}</TableCell>
-                            <TableCell>{detail.runningSerialNumber || "-"}</TableCell>
-                            <TableCell>
-                              <AttachmentLink url={detail.attachment} fileName="pi-attachment.pdf" />
-                            </TableCell>
+                        {searchResults.piDetails.length > 0 ? (
+                          searchResults.piDetails.map((detail, index) => (
+                            <tr
+                              key={detail.piNumber || index}
+                              className="hover:bg-orange-50 transition-colors"
+                            >
+                              <TableCell className="font-medium">
+                                {index + 1}
+                              </TableCell>
+                              <TableCell className="font-medium text-orange-600">
+                                {detail.piNumber || "-"}
+                              </TableCell>
+                              <TableCell>{formatDate(detail.date)}</TableCell>
+                              <TableCell>
+                                {truncateText(detail.detailVendor)}
+                              </TableCell>
+                              <TableCell>{detail.pieces || "-"}</TableCell>
+                              <TableCell>{detail.model || "-"}</TableCell>
+                              <TableCell>{detail.detailRate || "-"}</TableCell>
+                              <TableCell>
+                                {formatCurrency(detail.detailExchangeRate)}
+                              </TableCell>
+                              <TableCell>
+                                {formatCurrency(detail.detailCurrentRate)}
+                              </TableCell>
+                              <TableCell>
+                                {formatCurrency(detail.advanceAmount)}
+                              </TableCell>
+                              <TableCell>
+                                {detail.runningSerialNumber || "-"}
+                              </TableCell>
+                              <TableCell>
+                                <AttachmentLink
+                                  url={detail.attachment}
+                                  fileName="pi-attachment.pdf"
+                                />
+                              </TableCell>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={12}
+                              className="px-6 py-8 text-center text-gray-600 font-medium"
+                            >
+                              No data available for this PI Number
+                            </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
                 )}
 
                 {/* Shipping Details Table */}
-                {searchResults.shippingDetails?.length > 0 && (
+                {searchType === "piNumber" && (
                   <div className="p-6 border-t border-orange-200">
                     <h3 className="text-lg font-semibold text-orange-600 mb-4">
                       Shipping Details
@@ -442,7 +482,7 @@ const SearchCard = () => {
                         <tr className="border-b border-orange-200">
                           <TableHeader>SR No.</TableHeader>
                           <TableHeader>PI Number</TableHeader>
-                          <TableHeader>Finance Date</TableHeader>
+                          <TableHeader>Date</TableHeader>
                           <TableHeader>Currency</TableHeader>
                           <TableHeader>Vendor</TableHeader>
                           <TableHeader>Amount</TableHeader>
@@ -456,52 +496,74 @@ const SearchCard = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
-                        {searchResults.shippingDetails.map((detail, index) => (
-                          <tr
-                            key={detail.piNumber || index}
-                            className="hover:bg-orange-50 transition-colors"
-                          >
-                            <TableCell className="font-medium">
-                              {index + 1}
-                            </TableCell>
-                            <TableCell className="font-medium text-orange-600">
-                              {detail.piNumber || "-"}
-                            </TableCell>
-                            <TableCell>{formatDate(detail.financeDate)}</TableCell>
-                            <TableCell>{detail.financeRate || "-"}</TableCell>
-                            <TableCell>
-                              {truncateText(detail.shippingVendor)}
-                            </TableCell>
-                            <TableCell>{formatCurrency(detail.amount, detail.financeRate)}</TableCell>
-                            <TableCell>{detail.billOfLadingNo || "-"}</TableCell>
-                            <TableCell>{detail.invoiceNo || "-"}</TableCell>
-                            <TableCell>{detail.vesselNo || "-"}</TableCell>
-                            <TableCell>{detail.containerNo || "-"}</TableCell>
-                            <TableCell>{formatDate(detail.expectedTimeOfArrival)}</TableCell>
-                            <TableCell>
-                              <AttachmentLink
-                                url={detail.billOfLadingAttachment}
-                                fileName="bill-of-lading.pdf"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <AttachmentLink
-                                url={detail.invoiceAttachment}
-                                fileName="invoice.pdf"
-                              />
-                            </TableCell>
+                        {searchResults.shippingDetails.length > 0 ? (
+                          searchResults.shippingDetails.map((detail, index) => (
+                            <tr
+                              key={detail.piNumber || index}
+                              className="hover:bg-orange-50 transition-colors"
+                            >
+                              <TableCell className="font-medium">
+                                {index + 1}
+                              </TableCell>
+                              <TableCell className="font-medium text-orange-600">
+                                {detail.piNumber || "-"}
+                              </TableCell>
+                              <TableCell>
+                                {formatDate(detail.financeDate)}
+                              </TableCell>
+                              <TableCell>{detail.financeRate || "-"}</TableCell>
+                              <TableCell>
+                                {truncateText(detail.shippingVendor)}
+                              </TableCell>
+                              <TableCell>
+                                {formatCurrency(
+                                  detail.amount,
+                                  detail.financeRate
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {detail.billOfLadingNo || "-"}
+                              </TableCell>
+                              <TableCell>{detail.invoiceNo || "-"}</TableCell>
+                              <TableCell>{detail.vesselNo || "-"}</TableCell>
+                              <TableCell>{detail.containerNo || "-"}</TableCell>
+                              <TableCell>
+                                {formatDate(detail.expectedTimeOfArrival)}
+                              </TableCell>
+                              <TableCell>
+                                <AttachmentLink
+                                  url={detail.billOfLadingAttachment}
+                                  fileName="bill-of-lading.pdf"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <AttachmentLink
+                                  url={detail.invoiceAttachment}
+                                  fileName="invoice.pdf"
+                                />
+                              </TableCell>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={13}
+                              className="px-6 py-8 text-center text-gray-600 font-medium"
+                            >
+                              No data available for this PI Number
+                            </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
                 )}
 
                 {/* Clearance Details Table */}
-                {searchResults.clearanceDetails?.length > 0 && (
+                {searchType === "boeNo" && (
                   <div className="p-6 border-t border-orange-200">
                     <h3 className="text-lg font-semibold text-orange-600 mb-4">
-                      Clearance Details
+                      BOE Details
                     </h3>
                     <table className="w-full">
                       <thead>
@@ -511,43 +573,64 @@ const SearchCard = () => {
                           <TableHeader>BOE No.</TableHeader>
                           <TableHeader>Duty Paid</TableHeader>
                           <TableHeader>Duty Amount</TableHeader>
-                          <TableHeader>USD Rate at Clearance</TableHeader>
-                          <TableHeader>Clearance Date</TableHeader>
-                          <TableHeader>IGM Attachment</TableHeader>
+                          <TableHeader>Rate</TableHeader>
+                          <TableHeader>Date</TableHeader>
+                          <TableHeader>Attachment</TableHeader>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
-                        {searchResults.clearanceDetails.map((detail, index) => (
-                          <tr
-                            key={detail.piNumber || index}
-                            className="hover:bg-orange-50 transition-colors"
-                          >
-                            <TableCell className="font-medium">
-                              {index + 1}
-                            </TableCell>
-                            <TableCell className="font-medium text-orange-600">
-                              {detail.piNumber || "-"}
-                            </TableCell>
-                            <TableCell>{detail.boeNo || "-"}</TableCell>
-                            <TableCell>{formatDutyPaid(detail.dutyPaid)}</TableCell>
-                            <TableCell>{`$${detail.dutyAmout?.toFixed(2) || "-"}`}</TableCell>
-                            <TableCell>{detail.usdRateAtClearance || "-"}</TableCell>
-                            <TableCell>{formatDate(detail.clearanceDate)}</TableCell>
-                            <TableCell>
-                              <AttachmentLink
-                                url={detail.igmAttachment}
-                                fileName="igm-attachment.pdf"
-                              />
-                            </TableCell>
+                        {searchResults.clearanceDetails.length > 0 ? (
+                          searchResults.clearanceDetails.map(
+                            (detail, index) => (
+                              <tr
+                                key={detail.piNumber || index}
+                                className="hover:bg-orange-50 transition-colors"
+                              >
+                                <TableCell className="font-medium">
+                                  {index + 1}
+                                </TableCell>
+                                <TableCell className="font-medium text-orange-600">
+                                  {detail.piNumber || "-"}
+                                </TableCell>
+                                <TableCell>{detail.boeNo || "-"}</TableCell>
+                                <TableCell>
+                                  {formatDutyPaid(detail.dutyPaid)}
+                                </TableCell>
+                                <TableCell>{`$${
+                                  detail.dutyAmout?.toFixed(2) || "-"
+                                }`}</TableCell>
+                                <TableCell>
+                                  {detail.usdRateAtClearance || "-"}
+                                </TableCell>
+                                <TableCell>
+                                  {formatDate(detail.clearanceDate)}
+                                </TableCell>
+                                <TableCell>
+                                  <AttachmentLink
+                                    url={detail.igmAttachment}
+                                    fileName="igm-attachment.pdf"
+                                  />
+                                </TableCell>
+                              </tr>
+                            )
+                          )
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={8}
+                              className="px-6 py-8 text-center text-gray-600 font-medium"
+                            >
+                              No data available for this BOE Number
+                            </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
                 )}
 
                 {/* Transportation Details Table */}
-                {searchResults.transportationDetails?.length > 0 && (
+                {searchType === "boeNo" && (
                   <div className="p-6 border-t border-orange-200">
                     <h3 className="text-lg font-semibold text-orange-600 mb-4">
                       Transportation Details
@@ -562,44 +645,71 @@ const SearchCard = () => {
                           <TableHeader>Final Destination</TableHeader>
                           <TableHeader>BOE No.</TableHeader>
                           <TableHeader>Detail Rate</TableHeader>
-                          <TableHeader>Transportation Rate</TableHeader>
+                          <TableHeader>Model Name</TableHeader>
                           <TableHeader>Total Amount</TableHeader>
                           <TableHeader>E-Way Bill Attachment</TableHeader>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
-                        {searchResults.transportationDetails.map((detail, index) => (
-                          <tr
-                            key={detail.piNumber || index}
-                            className="hover:bg-orange-50 transition-colors"
-                          >
-                            <TableCell className="font-medium">
-                              {index + 1}
-                            </TableCell>
-                            <TableCell className="font-medium text-orange-600">
-                              {detail.piNumber || "-"}
-                            </TableCell>
-                            <TableCell>{detail.eWayBillNumber || "-"}</TableCell>
-                            <TableCell>{formatCurrency(detail.amountOfTransport)}</TableCell>
-                            <TableCell>{truncateText(detail.finalDestination)}</TableCell>
-                            <TableCell>{truncateText(detail.boeNo)}</TableCell>
-                            <TableCell>{detail.detailRate || "-"}</TableCell>
-                            <TableCell>{formatCurrency(detail.transporationRate)}</TableCell>
-                            <TableCell>{formatCurrency(detail.totalAmout)}</TableCell>
-                            <TableCell>
-                              <AttachmentLink
-                                url={detail.attachedmentEWayBill}
-                                fileName="eway-bill.pdf"
-                              />
-                            </TableCell>
+                        {searchResults.transportationDetails.length > 0 ? (
+                          searchResults.transportationDetails.map(
+                            (detail, index) => (
+                              <tr
+                                key={detail.piNumber || index}
+                                className="hover:bg-orange-50 transition-colors"
+                              >
+                                <TableCell className="font-medium">
+                                  {index + 1}
+                                </TableCell>
+                                <TableCell className="font-medium text-orange-600">
+                                  {detail.piNumber || "-"}
+                                </TableCell>
+                                <TableCell>
+                                  {detail.eWayBillNumber || "-"}
+                                </TableCell>
+                                <TableCell>
+                                  {formatCurrency(detail.amountOfTransport)}
+                                </TableCell>
+                                <TableCell>
+                                  {truncateText(detail.finalDestination)}
+                                </TableCell>
+                                <TableCell>
+                                  {truncateText(detail.boeNo)}
+                                </TableCell>
+                                <TableCell>
+                                  {detail.detailRate || "-"}
+                                </TableCell>
+                                <TableCell>
+                                  {truncateText(detail.modelName)}
+                                </TableCell>
+                                <TableCell>
+                                  {formatCurrency(detail.totalAmout)}
+                                </TableCell>
+                                <TableCell>
+                                  <AttachmentLink
+                                    url={detail.attachedmentEWayBill}
+                                    fileName="eway-bill.pdf"
+                                  />
+                                </TableCell>
+                              </tr>
+                            )
+                          )
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={10}
+                              className="px-6 py-8 text-center text-gray-600 font-medium"
+                            >
+                              No data available for this BOE Number
+                            </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
                 )}
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

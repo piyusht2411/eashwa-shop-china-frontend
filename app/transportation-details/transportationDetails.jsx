@@ -351,7 +351,9 @@ const TransportationDetails = () => {
       if (selectedMonth) {
         params.append("month", selectedMonth);
       }
-      const endpoint = API_CONFIG.ENDPOINTS.TRANSPORTATION_DETAILS || "/formData/all-transport-details";
+      const endpoint =
+        API_CONFIG.ENDPOINTS.TRANSPORTATION_DETAILS ||
+        "/formData/all-transport-details";
       const url = `${API_CONFIG.BASE_URL}${endpoint}?${params}`;
       console.log("Fetching from URL:", url); // Debug the URL
       const response = await makeRequest(url);
@@ -395,7 +397,7 @@ const TransportationDetails = () => {
       "Final Destination": truncateText(detail.finalDestination),
       "BOE No.": truncateText(detail.boeNo),
       "Detail Rate": detail.detailRate || "-",
-      "Transportation Rate": formatCurrency(detail.transporationRate),
+      "Model Name": truncateText(detail.modelName),
       "Total Amount": formatCurrency(detail.totalAmout),
       "E-Way Bill Attachment": detail.attachedmentEWayBill || "No attachment",
     }));
@@ -554,7 +556,7 @@ const TransportationDetails = () => {
                       <TableHeader>Final Destination</TableHeader>
                       <TableHeader>BOE No.</TableHeader>
                       <TableHeader>Detail Rate</TableHeader>
-                      <TableHeader>Transportation Rate</TableHeader>
+                      <TableHeader>Model Name</TableHeader>
                       <TableHeader>Total Amount</TableHeader>
                       <TableHeader>E-Way Bill Attachment</TableHeader>
                     </tr>
@@ -580,10 +582,10 @@ const TransportationDetails = () => {
                         </TableCell>
                         <TableCell>{truncateText(detail.boeNo)}</TableCell>
                         <TableCell>{detail.detailRate || "-"}</TableCell>
+                        <TableCell>{truncateText(detail.modelName)}</TableCell>
                         <TableCell>
-                          {formatCurrency(detail.transporationRate)}
+                          {formatCurrency(detail.totalAmout)}
                         </TableCell>
-                        <TableCell>{formatCurrency(detail.totalAmout)}</TableCell>
                         <TableCell>
                           <AttachmentLink
                             url={detail.attachedmentEWayBill}

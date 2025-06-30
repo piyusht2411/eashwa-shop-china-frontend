@@ -53,6 +53,28 @@ export default function CombinedFormPage() {
       if (res.ok) {
         setSubmitted(true); // Show success message
         toast.success("Shipping and Finance details submitted successfully!");
+        // Reset form data and step
+        setFormData({
+          piFinance: {
+            piNumber: "",
+            financeDate: "",
+            currentUsdRate: "",
+            vendor: "",
+            amount: "",
+          },
+          shipping: {
+            piNumber: "",
+            billOfLadingNo: "",
+            invoiceNo: "",
+            vesselNo: "",
+            shipNo: "",
+            containerNo: "",
+            eta: "",
+            billOfLadingAttachment: "",
+            invoiceAttachment: "",
+          },
+        });
+        setStep(1); // Return to first step
       } else {
         const errorMsg =
           responseData?.error ||
@@ -76,14 +98,18 @@ export default function CombinedFormPage() {
         </button>
       </Link>
 
-      {submitted ? (
-        <p className="text-green-600 font-semibold text-center text-xl">
-          ✅ Shipping and Finance details submitted successfully!
-        </p>
-      ) : step === 1 ? (
-        <PiFinanceForm data={formData} setData={setFormData} onNext={() => setStep(2)} />
+      {step === 1 ? (
+        <PiFinanceForm
+          data={formData}
+          setData={setFormData}
+          onNext={() => setStep(2)}
+        />
       ) : (
-        <ShippingForm data={formData} setData={setFormData} onSubmit={handleSubmit} />
+        <ShippingForm
+          data={formData}
+          setData={setFormData}
+          onSubmit={handleSubmit}
+        />
       )}
     </div>
   );

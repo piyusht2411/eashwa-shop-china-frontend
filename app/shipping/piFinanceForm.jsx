@@ -65,7 +65,7 @@ export default function PiFinanceForm({ data, setData, onNext }) {
 
           <Input
             type="date"
-            label="Finance Date"
+            label="Date"
             name="financeDate"
             value={shipping.financeDate || ""}
             onChange={handleChange}
@@ -109,7 +109,14 @@ export default function PiFinanceForm({ data, setData, onNext }) {
   );
 }
 
-function Input({ label, name, value, onChange, type = "text", required = false }) {
+function Input({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+}) {
   return (
     <div className="flex flex-col">
       <label className="mb-1 font-medium text-orange-700">{label}</label>
@@ -125,7 +132,14 @@ function Input({ label, name, value, onChange, type = "text", required = false }
   );
 }
 
-function SelectInput({ label, name, value, options, onChange, required = false }) {
+function SelectInput({
+  label,
+  name,
+  value,
+  options,
+  onChange,
+  required = false,
+}) {
   return (
     <div className="flex flex-col">
       <label className="mb-1 font-medium text-orange-700">{label}</label>

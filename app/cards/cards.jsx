@@ -58,7 +58,7 @@ const Cards = () => {
       <div className="flex justify-end mb-6 lg:mb-0 lg:absolute lg:top-6 lg:right-6 z-10">
         <button
           onClick={() => router.push("/search")}
-          className="px-4 py-2 sm:px-6 sm:py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition duration-300 flex items-center gap-2 text-sm sm:text-base"
+          className="px-4 py-2 sm:px-6 sm:py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition duration-300 flex items-center gap-2 text-sm sm:text-base cursor-pointer"
         >
           <svg
             className="w-4 h-4 sm:w-5 sm:h-5"
@@ -95,7 +95,9 @@ const Cards = () => {
               />
             </div>
             <div className="p-4 sm:p-6 text-center">
-              <h3 className={`text-lg sm:text-xl md:text-2xl font-semibold ${form.textColor}`}>
+              <h3
+                className={`text-lg sm:text-xl md:text-2xl font-semibold ${form.textColor}`}
+              >
                 {form.name}
               </h3>
             </div>
