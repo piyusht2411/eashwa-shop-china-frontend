@@ -104,7 +104,9 @@ const Clearance = () => {
       ...formData,
       dutyPaid: formData.dutyPaid === "true",
       dutyAmout: formData.dutyAmout ? parseFloat(formData.dutyAmout) : null,
-      clearanceDate: formData.clearanceDate ? new Date(formData.clearanceDate) : null,
+      clearanceDate: formData.clearanceDate
+        ? new Date(formData.clearanceDate)
+        : null,
     };
 
     const token = localStorage.getItem("token");
@@ -126,9 +128,13 @@ const Clearance = () => {
       if (res.ok) {
         setSubmitted(true);
         toast.success("Clearance details submitted successfully!");
-        setTimeout(resetForm, 3000); // Reset after 3 seconds
+        setTimeout(resetForm, 500); // Reset after 3 seconds
       } else {
-        toast.error(`Submission failed: ${data.message || data.error || "Something went wrong"}`);
+        toast.error(
+          `Submission failed: ${
+            data.message || data.error || "Something went wrong"
+          }`
+        );
       }
     } catch (err) {
       console.error("Error:", err);
@@ -160,139 +166,126 @@ const Clearance = () => {
 
       <Link href="/clearance-details">
         <button className="absolute top-4 right-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition">
-          View Clearance Details
+          View BOE Details
         </button>
       </Link>
 
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg border border-orange-200">
         <h2 className="text-2xl font-bold text-center text-orange-600 mb-6">
-          Clearance Form
+          BOE Form
         </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <InputField
+            label="PI Number"
+            name="piNumber"
+            value={formData.piNumber}
+            onChange={handleChange}
+            required
+          />
 
-        {submitted ? (
-          <div className="text-center text-green-600 font-semibold text-lg py-8">
-            🎉 Thank you for submitting! Form will reset soon...
-            <button
-              onClick={resetForm}
-              className="mt-4 bg-orange-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-orange-600 transition"
+          <InputField
+            label="BOE No"
+            name="boeNo"
+            value={formData.boeNo}
+            onChange={handleChange}
+          />
+
+          <div>
+            <label className="block text-sm font-medium text-orange-700 mb-1">
+              Duty Paid
+            </label>
+            <select
+              name="dutyPaid"
+              value={formData.dutyPaid}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border border-orange-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-black"
             >
-              Reset Now
-            </button>
+              <option value="">Select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <InputField
-              label="PI Number"
-              name="piNumber"
-              value={formData.piNumber}
+
+          <InputField
+            label="Duty Amount"
+            name="dutyAmout"
+            value={formData.dutyAmout}
+            onChange={handleChange}
+            type="number"
+          />
+
+          <div>
+            <label className="block text-sm font-medium text-orange-700 mb-1">
+              Rate
+            </label>
+            <select
+              name="usdRateAtClearance"
+              value={formData.usdRateAtClearance}
               onChange={handleChange}
               required
-            />
-
-            <InputField
-              label="BOE No"
-              name="boeNo"
-              value={formData.boeNo}
-              onChange={handleChange}
-            />
-
-            <div>
-              <label className="block text-sm font-medium text-orange-700 mb-1">
-                Duty Paid
-              </label>
-              <select
-                name="dutyPaid"
-                value={formData.dutyPaid}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-orange-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-black"
-              >
-                <option value="">Select</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </select>
-            </div>
-
-            <InputField
-              label="Duty Amount"
-              name="dutyAmout"
-              value={formData.dutyAmout}
-              onChange={handleChange}
-              type="number"
-            />
-
-            <div>
-              <label className="block text-sm font-medium text-orange-700 mb-1">
-                USD Rate at Clearance
-              </label>
-              <select
-                name="usdRateAtClearance"
-                value={formData.usdRateAtClearance}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-orange-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-black"
-              >
-                {["USD", "CNY"].map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <InputField
-              label="Clearance Date"
-              name="clearanceDate"
-              type="date"
-              value={formData.clearanceDate}
-              onChange={handleChange}
-              required
-            />
-
-            <div className="flex flex-col">
-              <label className="block text-sm font-medium text-orange-700 mb-1">
-                IGM Attachment (PDF)
-              </label>
-              <div className="flex items-center space-x-4">
-                <label
-                  htmlFor="igmAttachment-input"
-                  className={`bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg cursor-pointer hover:bg-orange-300 transition ${
-                    isUploading ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                >
-                  Choose File
-                </label>
-                <input
-                  id="igmAttachment-input"
-                  type="file"
-                  name="igmAttachment"
-                  accept="application/pdf"
-                  onChange={handleChange}
-                  required={!formData.igmAttachment}
-                  disabled={isUploading}
-                  className="hidden"
-                />
-                <span className="text-gray-500">
-                  {formData.igmAttachment
-                    ? formData.igmAttachment.split("/").pop()
-                    : "No file chosen"}
-                </span>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isSubmitting || isUploading}
-              className={`w-full bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg transition ${
-                isSubmitting || isUploading
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-orange-600"
-              }`}
+              className="w-full px-3 py-2 border border-orange-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-black"
             >
-              {isSubmitting ? "Submitting..." : "Submit"}
-            </button>
-          </form>
-        )}
+              {["USD", "CNY"].map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <InputField
+            label="Date"
+            name="clearanceDate"
+            type="date"
+            value={formData.clearanceDate}
+            onChange={handleChange}
+            required
+          />
+
+          <div className="flex flex-col">
+            <label className="block text-sm font-medium text-orange-700 mb-1">
+              Attachment
+            </label>
+            <div className="flex items-center space-x-4">
+              <label
+                htmlFor="igmAttachment-input"
+                className={`bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg cursor-pointer hover:bg-orange-300 transition ${
+                  isUploading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                Choose File
+              </label>
+              <input
+                id="igmAttachment-input"
+                type="file"
+                name="igmAttachment"
+                accept="application/pdf"
+                onChange={handleChange}
+                required={!formData.igmAttachment}
+                disabled={isUploading}
+                className="hidden"
+              />
+              <span className="text-gray-500">
+                {formData.igmAttachment
+                  ? formData.igmAttachment.split("/").pop()
+                  : "No file chosen"}
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting || isUploading}
+            className={`w-full bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg transition ${
+              isSubmitting || isUploading
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-orange-600"
+            }`}
+          >
+            {isSubmitting ? "Submitting..." : "Submit"}
+          </button>
+        </form>
       </div>
     </div>
   );
@@ -307,7 +300,9 @@ const InputField = ({
   required = false,
 }) => (
   <div>
-    <label className="block text-sm font-medium text-orange-700 mb-1">{label}</label>
+    <label className="block text-sm font-medium text-orange-700 mb-1">
+      {label}
+    </label>
     <input
       type={type}
       name={name}

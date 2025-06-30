@@ -106,7 +106,7 @@ const LoadingSpinner = () => (
       </div>
     </div>
     <span className="ml-3 text-orange-600 font-medium">
-      Loading Clearance Details...
+      Loading BOE Details...
     </span>
   </div>
 );
@@ -159,10 +159,10 @@ const EmptyState = () => (
       </svg>
     </div>
     <h3 className="text-xl font-semibold text-gray-800 mb-2">
-      No Clearance Details Found
+      No BOE Details Found
     </h3>
     <p className="text-gray-600">
-      There are no clearance details to display at the moment.
+      There are no BOE details to display at the moment.
     </p>
   </div>
 );
@@ -358,7 +358,9 @@ const ClearanceDetails = () => {
       if (selectedMonth) {
         params.append("month", selectedMonth);
       }
-      const endpoint = API_CONFIG.ENDPOINTS.CLEARANCE_DETAILS || "/formData/all-clearance-details";
+      const endpoint =
+        API_CONFIG.ENDPOINTS.CLEARANCE_DETAILS ||
+        "/formData/all-clearance-details";
       const url = `${API_CONFIG.BASE_URL}${endpoint}?${params}`;
       console.log("Fetching from URL:", url); // Debug the URL
       const response = await makeRequest(url);
@@ -400,7 +402,7 @@ const ClearanceDetails = () => {
       "BOE No.": detail.boeNo || "-",
       "Duty Paid": formatDutyPaid(detail.dutyPaid),
       "Duty Amount": detail.dutyAmout || "-",
-      "USD Rate at Clearance": detail.usdRateAtClearance || "-",
+      Rate: detail.usdRateAtClearance || "-",
       "Clearance Date": formatDate(detail.clearanceDate),
       "IGM Attachment": detail.igmAttachment || "No attachment",
     }));
@@ -442,7 +444,7 @@ const ClearanceDetails = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Clearance Details Dashboard
+                  BOE Details Dashboard
                 </h1>
                 <p className="text-orange-100 mt-1">
                   BOE and IGM Management System
@@ -486,7 +488,7 @@ const ClearanceDetails = () => {
                       d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                     />
                   </svg>
-                  Add New Clearance
+                  Add New BOE
                 </button>
               </div>
             </div>
@@ -557,9 +559,9 @@ const ClearanceDetails = () => {
                       <TableHeader>BOE No.</TableHeader>
                       <TableHeader>Duty Paid</TableHeader>
                       <TableHeader>Duty Amount</TableHeader>
-                      <TableHeader>USD Rate at Clearance</TableHeader>
-                      <TableHeader>Clearance Date</TableHeader>
-                      <TableHeader>IGM Attachment</TableHeader>
+                      <TableHeader>Rate</TableHeader>
+                      <TableHeader>Date</TableHeader>
+                      <TableHeader>Attachment</TableHeader>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
@@ -576,9 +578,17 @@ const ClearanceDetails = () => {
                         </TableCell>
                         <TableCell>{detail.boeNo || "-"}</TableCell>
                         <TableCell>{formatDutyPaid(detail.dutyPaid)}</TableCell>
-                        <TableCell>{detail.dutyAmout ? `$${detail.dutyAmout.toFixed(2)}` : "-"}</TableCell>
-                        <TableCell>{detail.usdRateAtClearance || "-"}</TableCell>
-                        <TableCell>{formatDate(detail.clearanceDate)}</TableCell>
+                        <TableCell>
+                          {detail.dutyAmout
+                            ? `$${detail.dutyAmout.toFixed(2)}`
+                            : "-"}
+                        </TableCell>
+                        <TableCell>
+                          {detail.usdRateAtClearance || "-"}
+                        </TableCell>
+                        <TableCell>
+                          {formatDate(detail.clearanceDate)}
+                        </TableCell>
                         <TableCell>
                           <AttachmentLink
                             url={detail.igmAttachment}

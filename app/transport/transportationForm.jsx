@@ -12,7 +12,7 @@ export default function TransportationForm() {
     attachedmentEWayBill: "",
     boeNo: "",
     detailRate: "",
-    transporationRate: "",
+    modelName: "",
     totalAmout: "",
   });
 
@@ -93,8 +93,23 @@ export default function TransportationForm() {
       if (res.ok) {
         setSubmitted(true);
         toast.success("Transportation details submitted successfully!");
+        setFormData({
+          piNumber: "",
+          eWayBillNumber: "",
+          amountOfTransport: "",
+          finalDestination: "",
+          attachedmentEWayBill: "",
+          boeNo: "",
+          detailRate: "",
+          modelName: "",
+          totalAmout: "",
+        });
       } else {
-        toast.error(`Submission failed: ${result.message || result.error || "Something went wrong"}`);
+        toast.error(
+          `Submission failed: ${
+            result.message || result.error || "Something went wrong"
+          }`
+        );
       }
     } catch (err) {
       console.error("Submit error:", err);
@@ -136,87 +151,81 @@ export default function TransportationForm() {
           Transportation Details Form
         </h2>
 
-        {submitted ? (
-          <p className="text-green-600 text-center font-semibold">
-            ✅ Form submitted successfully!
-          </p>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                label="PI Number"
-                name="piNumber"
-                value={formData.piNumber}
-                onChange={handleChange}
-                required
-              />
-              <Input
-                label="E-Way Bill Number"
-                name="eWayBillNumber"
-                value={formData.eWayBillNumber}
-                onChange={handleChange}
-                type="number"
-              />
-              <Input
-                label="Amount of Transport"
-                name="amountOfTransport"
-                value={formData.amountOfTransport}
-                onChange={handleChange}
-                type="number"
-              />
-              <Input
-                label="Final Destination"
-                name="finalDestination"
-                value={formData.finalDestination}
-                onChange={handleChange}
-              />
-              <Input
-                label="BOE No."
-                name="boeNo"
-                value={formData.boeNo}
-                onChange={handleChange}
-              />
-              <SelectInput
-                label="Detail Rate"
-                name="detailRate"
-                value={formData.detailRate}
-                options={["USD", "CNY"].map((c) => ({ value: c, label: c }))}
-                onChange={handleChange}
-              />
-              <Input
-                label="Transportation Rate"
-                name="transporationRate"
-                value={formData.transporationRate}
-                onChange={handleChange}
-                type="number"
-              />
-              <Input
-                label="Total Amount"
-                name="totalAmout"
-                value={formData.totalAmout}
-                onChange={handleChange}
-                type="number"
-              />
-              <FileInput
-                label="E-Way Bill PDF"
-                name="attachedmentEWayBill"
-                onChange={handleChange}
-                fileUrl={formData.attachedmentEWayBill}
-                disabled={isUploading}
-              />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            label="PI Number"
+            name="piNumber"
+            value={formData.piNumber}
+            onChange={handleChange}
+            required
+          />
+          <Input
+            label="E-Way Bill Number"
+            name="eWayBillNumber"
+            value={formData.eWayBillNumber}
+            onChange={handleChange}
+            type="number"
+          />
+          <Input
+            label="Amount of Transport"
+            name="amountOfTransport"
+            value={formData.amountOfTransport}
+            onChange={handleChange}
+            type="number"
+          />
+          <Input
+            label="Final Destination"
+            name="finalDestination"
+            value={formData.finalDestination}
+            onChange={handleChange}
+          />
+          <Input
+            label="BOE No."
+            name="boeNo"
+            value={formData.boeNo}
+            onChange={handleChange}
+          />
+          <SelectInput
+            label="Rate"
+            name="detailRate"
+            value={formData.detailRate}
+            options={["USD", "CNY"].map((c) => ({ value: c, label: c }))}
+            onChange={handleChange}
+          />
+          <Input
+            label="Model Name"
+            name="modelName"
+            value={formData.modelName}
+            onChange={handleChange}
+            type="text"
+          />
+          <Input
+            label="Total Amount"
+            name="totalAmout"
+            value={formData.totalAmout}
+            onChange={handleChange}
+            type="number"
+          />
+          <FileInput
+            label="E-Way Bill PDF"
+            name="attachedmentEWayBill"
+            onChange={handleChange}
+            fileUrl={formData.attachedmentEWayBill}
+            disabled={isUploading}
+          />
+        </div>
 
-            <button
-              type="submit"
-              disabled={isUploading}
-              className={`mt-6 w-full bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg transition ${
-                isUploading ? "opacity-50 cursor-not-allowed" : "hover:bg-orange-600"
-              }`}
-            >
-              Submit
-            </button>
-          </>
-        )}
+        <button
+          type="submit"
+          disabled={isUploading}
+          className={`mt-6 w-full bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg transition ${
+            isUploading
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-orange-600"
+          }`}
+        >
+          Submit
+        </button>
       </form>
     </div>
   );
