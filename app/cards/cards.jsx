@@ -43,19 +43,25 @@ const Cards = () => {
   ];
 
   return (
-    <section className="py-12 px-6 bg-orange-50 min-h-screen relative">
-      <div className="max-w-7xl mx-auto text-center mb-10">
-        <h2 className="text-4xl font-bold text-orange-800">Choose a Form</h2>
-        <p className="text-orange-600 mt-2">Click on a form to begin</p>
+    <section className="py-10 px-4 sm:px-6 md:px-10 bg-orange-50 min-h-screen relative">
+      {/* Title Section */}
+      <div className="max-w-7xl mx-auto text-center mb-6 sm:mb-10">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-800">
+          Choose a Form
+        </h2>
+        <p className="text-sm sm:text-base text-orange-600 mt-2">
+          Click on a form to begin
+        </p>
       </div>
 
-      <div className="absolute top-6 right-6">
+      {/* Search Button */}
+      <div className="flex justify-end mb-6 lg:mb-0 lg:absolute lg:top-6 lg:right-6 z-10">
         <button
           onClick={() => router.push("/search")}
-          className="px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition duration-300 flex items-center gap-2"
+          className="px-4 py-2 sm:px-6 sm:py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition duration-300 flex items-center gap-2 text-sm sm:text-base"
         >
           <svg
-            className="w-5 h-5"
+            className="w-4 h-4 sm:w-5 sm:h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -71,25 +77,25 @@ const Cards = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+      {/* Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 max-w-7xl mx-auto">
         {forms.map((form, index) => (
           <div
             key={index}
             onClick={() => router.push(form.link)}
             className={`cursor-pointer bg-white rounded-2xl overflow-hidden shadow-xl ${form.hoverBg} hover:scale-105 transform transition duration-300`}
           >
-            <div className="relative w-full aspect-[4/3] h-60 flex justify-center items-center">
+            <div className="relative w-full aspect-[4/3] sm:h-52 flex justify-center items-center bg-gray-50">
               <Image
                 src={form.image}
                 alt={form.name}
-                objectFit="cover"
-                className="object-cover"
-                width={230}
-                height={230}
+                className="object-contain"
+                width={200}
+                height={200}
               />
             </div>
-            <div className="p-6 text-center">
-              <h3 className={`text-2xl font-semibold ${form.textColor}`}>
+            <div className="p-4 sm:p-6 text-center">
+              <h3 className={`text-lg sm:text-xl md:text-2xl font-semibold ${form.textColor}`}>
                 {form.name}
               </h3>
             </div>
