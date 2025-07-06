@@ -40,6 +40,13 @@ const Cards = () => {
       hoverBg: "hover:bg-cyan-100",
       textColor: "text-cyan-800",
     },
+    {
+      name: "Bank Status",
+      image: FileImage3,
+      link: "/bankstatus",
+      hoverBg: "hover:bg-cyan-100",
+      textColor: "text-cyan-800",
+    },
   ];
 
   return (
