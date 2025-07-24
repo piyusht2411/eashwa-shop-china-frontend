@@ -63,10 +63,10 @@ export default function ShippingForm({ data, setData, onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!shipping.piNumber) {
-      toast.error("PI Number is required");
-      return;
-    }
+    // if (!shipping.piNumber) {
+    //   toast.error("PI Number is required");
+    //   return;
+    // }
     onSubmit();
   };
 
@@ -97,13 +97,13 @@ export default function ShippingForm({ data, setData, onSubmit }) {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
+          {/* <Input
             label="PI Number"
             name="piNumber"
             value={shipping.piNumber || ""}
             onChange={handleChange}
             required
-          />
+          /> */}
           <Input
             label="Bill of Lading No."
             name="billOfLadingNo"
@@ -165,7 +165,14 @@ export default function ShippingForm({ data, setData, onSubmit }) {
   );
 }
 
-function Input({ label, name, value, onChange, type = "text", required = false }) {
+function Input({
+  label,
+  name,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+}) {
   return (
     <div className="flex flex-col">
       <label className="mb-1 font-medium text-orange-700">{label}</label>

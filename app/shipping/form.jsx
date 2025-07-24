@@ -10,14 +10,14 @@ export default function CombinedFormPage() {
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     piFinance: {
-      piNumber: "",
+      // piNumber: "",
       financeDate: "",
       currentUsdRate: "",
       vendor: "",
       amount: "",
     },
     shipping: {
-      piNumber: "",
+      // piNumber: "",
       billOfLadingNo: "",
       invoiceNo: "",
       vesselNo: "",
@@ -56,14 +56,14 @@ export default function CombinedFormPage() {
         // Reset form data and step
         setFormData({
           piFinance: {
-            piNumber: "",
+            // piNumber: "",
             financeDate: "",
             currentUsdRate: "",
             vendor: "",
             amount: "",
           },
           shipping: {
-            piNumber: "",
+            // piNumber: "",
             billOfLadingNo: "",
             invoiceNo: "",
             vesselNo: "",

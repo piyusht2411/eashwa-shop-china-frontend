@@ -28,10 +28,10 @@ export default function PiFinanceForm({ data, setData, onNext }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!shipping.piNumber) {
-      toast.error("PI Number is required");
-      return;
-    }
+    // if (!shipping.piNumber) {
+    //   toast.error("PI Number is required");
+    //   return;
+    // }
     if (!currencyOptions.includes(shipping.financeRate)) {
       toast.error("Invalid currency rate");
       return;
@@ -55,13 +55,13 @@ export default function PiFinanceForm({ data, setData, onNext }) {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
+          {/* <Input
             label="PI Number"
             name="piNumber"
             value={shipping.piNumber || ""}
             onChange={handleChange}
             required
-          />
+          /> */}
 
           <Input
             type="date"

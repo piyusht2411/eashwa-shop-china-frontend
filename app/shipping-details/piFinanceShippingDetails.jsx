@@ -404,7 +404,7 @@ const PiFinanceShippingDetails = () => {
   const handleExportCSV = useCallback(() => {
     const csvData = details.map((detail, index) => ({
       "SR No.": (currentPage - 1) * itemsPerPage + index + 1,
-      "PI Number": detail.piNumber || "-",
+      "PI Number": detail?.piNumber || "-",
       "Finance Date": formatDate(detail.financeDate),
       Currency: detail.financeRate || "-",
       Vendor: detail.shippingVendor || "-",
@@ -414,7 +414,8 @@ const PiFinanceShippingDetails = () => {
       "Vessel No.": detail.vesselNo || "-",
       "Container No.": detail.containerNo || "-",
       "Expected Time of Arrival": formatDate(detail.expectedTimeOfArrival),
-      "Bill of Lading Attachment": detail.billOfLadingAttachment || "No attachment",
+      "Bill of Lading Attachment":
+        detail.billOfLadingAttachment || "No attachment",
       "Invoice Attachment": detail.invoiceAttachment || "No attachment",
     }));
 
@@ -583,14 +584,14 @@ const PiFinanceShippingDetails = () => {
                   <tbody className="divide-y divide-gray-200">
                     {details.map((detail, index) => (
                       <tr
-                        key={detail.piNumber || index}
+                        key={detail?.piNumber || index}
                         className="hover:bg-orange-50 transition-colors"
                       >
                         <TableCell className="font-medium">
                           {(currentPage - 1) * itemsPerPage + index + 1}
                         </TableCell>
                         <TableCell className="font-medium text-orange-600">
-                          {detail.piNumber || "-"}
+                          {detail?.piNumber || "-"}
                         </TableCell>
                         <TableCell>{formatDate(detail.financeDate)}</TableCell>
                         <TableCell>{detail.financeRate || "-"}</TableCell>

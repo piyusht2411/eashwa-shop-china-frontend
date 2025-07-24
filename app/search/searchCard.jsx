@@ -260,26 +260,23 @@ const SearchCard = () => {
     }
 
     try {
-      console.log("Search Type:", searchType, "Search Value:", searchValue);
       const params = new URLSearchParams({
         [searchType]: searchValue,
       });
       const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SEARCH_DETAILS}?${params}`;
-      console.log("Fetching from URL:", url);
       const response = await makeRequest(url);
       const data = response.data || response;
-      console.log("Parsed Data:", data);
       setSearchResults({
         piDetails: data.piDetails || [],
         shippingDetails: data.shippingDetails || [],
         clearanceDetails: data.clearanceDetails || [],
         transportationDetails: data.transportationDetails || [],
       });
-      setHasSearched(true); // Set hasSearched to true after successful search
+      setHasSearched(true);
       toast.success("Search completed successfully!");
     } catch (err) {
       console.error("Search error:", err);
-      setHasSearched(true); // Still show tables on error
+      setHasSearched(true);
       toast.error(err.message || "Failed to fetch search results");
     }
   };
@@ -472,7 +469,7 @@ const SearchCard = () => {
                 )}
 
                 {/* Shipping Details Table */}
-                {searchType === "piNumber" && (
+                {/* {searchType === "piNumber" && (
                   <div className="p-6 border-t border-orange-200">
                     <h3 className="text-lg font-semibold text-orange-600 mb-4">
                       Shipping Details
@@ -557,7 +554,7 @@ const SearchCard = () => {
                       </tbody>
                     </table>
                   </div>
-                )}
+                )} */}
 
                 {/* Clearance Details Table */}
                 {searchType === "boeNo" && (
