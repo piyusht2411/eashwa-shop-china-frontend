@@ -200,6 +200,7 @@ export default function PiForm() {
               "BALING MOTORCYCLE(WUXI) CO.,LTD.",
               "ZHEJIANG CHAOWEI IMPORT AND EXPORT CO., LTD",
               "GABRIEL (SUZHOU)IMPORT ANDEXPORTTRADECO,. LTD",
+              "WUXI KEYWAY EV CO.,LTD."
             ]}
           />
 

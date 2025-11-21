@@ -12,6 +12,7 @@ export default function PiFinanceForm({ data, setData, onNext }) {
     "BALING MOTORCYCLE(WUXI) CO.,LTD.",
     "ZHEJIANG CHAOWEI IMPORT AND EXPORT CO., LTD",
     "GABRIEL (SUZHOU)IMPORT ANDEXPORTTRADECO,. LTD",
+    "WUXI KEYWAY EV CO.,LTD."
   ];
 
   const handleChange = (e) => {
