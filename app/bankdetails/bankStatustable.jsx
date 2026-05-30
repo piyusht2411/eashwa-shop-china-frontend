@@ -10,6 +10,8 @@ const API_CONFIG = {
   BASE_URL: 'https://eashwa-china-backend.vercel.app/api',
   ENDPOINTS: {
     BANK_STATUS: '/formData/all-bank-status', // Single endpoint for both fetch and submit
+    UPDATE: '/formData/bank-status',
+    DELETE: '/formData/bank-status',
   },
 };
 
@@ -50,6 +52,65 @@ const bankVendors = [
   "GABRIEL (SUZHOU)IMPORT ANDEXPORTTRADECO,. LTD",
   "WUXI KEYWAY EV CO.,LTD."
 ];
+
+const YEARS = [
+  { value: '', label: 'All Years' },
+  { value: '2024', label: '2024' },
+  { value: '2025', label: '2025' },
+  { value: '2026', label: '2026' },
+];
+
+const EDIT_FIELDS = [
+  { name: 'piNumber', label: 'PI Number', type: 'text' },
+  { name: 'boeNo', label: 'BOE Number', type: 'text' },
+  {
+    name: 'bankVendor',
+    label: 'Bank Vendor',
+    type: 'select',
+    options: bankVendors.map((v) => ({ value: v, label: v })),
+    full: true,
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    type: 'boolean',
+    options: [
+      { value: 'true', label: 'Yes' },
+      { value: 'false', label: 'No' },
+    ],
+  },
+];
+
+// Edit form helpers
+const initForm = (fields, record) => {
+  const form = {};
+  fields.forEach((f) => {
+    const val = record?.[f.name];
+    if (f.type === 'boolean')
+      form[f.name] = val === true ? 'true' : val === false ? 'false' : '';
+    else form[f.name] = val === undefined || val === null ? '' : String(val);
+  });
+  return form;
+};
+
+const buildPayload = (fields, values) => {
+  const payload = {};
+  fields.forEach((f) => {
+    const v = values[f.name];
+    if (f.type === 'number') payload[f.name] = v === '' || v === undefined ? null : Number(v);
+    else if (f.type === 'boolean') payload[f.name] = v === 'true';
+    else payload[f.name] = v;
+  });
+  return payload;
+};
+
+const authHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+};
 
 // Custom hooks
 const useApiCall = () => {
@@ -290,6 +351,101 @@ const PaginationControls = ({
   );
 };
 
+const RowActions = ({ onEdit, onDelete }) => (
+  <div className="flex items-center gap-2">
+    <button
+      onClick={onEdit}
+      title="Edit"
+      className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
+    >
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+        />
+      </svg>
+    </button>
+    <button
+      onClick={onDelete}
+      title="Delete"
+      className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+    >
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+        />
+      </svg>
+    </button>
+  </div>
+);
+
+const EditModal = ({ title, fields, values, onChange, onSave, onClose, saving }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4 rounded-t-2xl flex items-center justify-between sticky top-0">
+        <h2 className="text-xl font-bold text-white">{title}</h2>
+        <button
+          onClick={onClose}
+          className="text-white hover:text-orange-100 text-2xl leading-none cursor-pointer"
+        >
+          ×
+        </button>
+      </div>
+      <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {fields.map((field) => (
+          <div key={field.name} className={field.full ? 'sm:col-span-2' : ''}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {field.label}
+            </label>
+            {field.options ? (
+              <select
+                value={values[field.name] ?? ''}
+                onChange={(e) => onChange(field.name, e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-black"
+              >
+                <option value="">Select...</option>
+                {field.options.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type={field.type || 'text'}
+                value={values[field.name] ?? ''}
+                onChange={(e) => onChange(field.name, e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-black"
+              />
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+        <button
+          onClick={onClose}
+          disabled={saving}
+          className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={onSave}
+          disabled={saving}
+          className="px-4 py-2 rounded-lg bg-orange-500 text-white font-semibold hover:bg-orange-600 disabled:opacity-50 cursor-pointer"
+        >
+          {saving ? 'Saving...' : 'Save'}
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
 // Main Component
 const BankStatusTable = () => {
   const [formData, setFormData] = useState({
@@ -303,6 +459,10 @@ const BankStatusTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [editingRecord, setEditingRecord] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  const [saving, setSaving] = useState(false);
   const router = useRouter();
 
   const { makeRequest, loading, error } = useApiCall();
@@ -316,6 +476,9 @@ const BankStatusTable = () => {
       if (selectedMonth) {
         params.append('month', selectedMonth);
       }
+      if (selectedYear) {
+        params.append('year', selectedYear);
+      }
       const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.BANK_STATUS}?${params}`;
       console.log('Fetching from URL:', url);
       const response = await makeRequest(url);
@@ -324,7 +487,7 @@ const BankStatusTable = () => {
     } catch (err) {
       console.error('Failed to fetch bank statuses:', err);
     }
-  }, [currentPage, itemsPerPage, selectedMonth, makeRequest]);
+  }, [currentPage, itemsPerPage, selectedMonth, selectedYear, makeRequest]);
 
   useEffect(() => {
     fetchBankStatuses();
@@ -348,6 +511,67 @@ const BankStatusTable = () => {
     setSelectedMonth(month);
     setCurrentPage(1);
   }, []);
+
+  const handleYearChange = useCallback((year) => {
+    setSelectedYear(year);
+    setCurrentPage(1);
+  }, []);
+
+  const handleEdit = useCallback((record) => {
+    setEditForm(initForm(EDIT_FIELDS, record));
+    setEditingRecord(record);
+  }, []);
+
+  const handleEditChange = useCallback((name, value) => {
+    setEditForm((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    if (!editingRecord?._id) return;
+    setSaving(true);
+    try {
+      const res = await fetch(
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.UPDATE}/${editingRecord._id}`,
+        {
+          method: 'PUT',
+          headers: authHeaders(),
+          body: JSON.stringify(buildPayload(EDIT_FIELDS, editForm)),
+        }
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      toast.success('Record updated successfully');
+      setEditingRecord(null);
+      fetchBankStatuses();
+    } catch (err) {
+      console.error('Update failed:', err);
+      toast.error('Failed to update record');
+    } finally {
+      setSaving(false);
+    }
+  }, [editingRecord, editForm, fetchBankStatuses]);
+
+  const handleDelete = useCallback(
+    async (record) => {
+      if (!record?._id) return;
+      if (!window.confirm('Are you sure you want to delete this record?')) return;
+      try {
+        const res = await fetch(
+          `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.DELETE}/${record._id}`,
+          {
+            method: 'DELETE',
+            headers: authHeaders(),
+          }
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        toast.success('Record deleted successfully');
+        fetchBankStatuses();
+      } catch (err) {
+        console.error('Delete failed:', err);
+        toast.error('Failed to delete record');
+      }
+    },
+    [fetchBankStatuses]
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -492,11 +716,13 @@ const BankStatusTable = () => {
     link.setAttribute('href', url);
     link.setAttribute(
       'download',
-      `bank-status-${new Date().toISOString().slice(0, 10)}.csv`
+      `bank-status-${selectedYear || 'all-years'}-${
+        selectedMonth || 'all-months'
+      }-${new Date().toISOString().slice(0, 10)}.csv`
     );
     link.click();
     URL.revokeObjectURL(url);
-  }, [bankStatuses, currentPage, itemsPerPage]);
+  }, [bankStatuses, currentPage, itemsPerPage, selectedYear, selectedMonth]);
 
   const handleRefresh = useCallback(() => {
     fetchBankStatuses();
@@ -504,6 +730,18 @@ const BankStatusTable = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100">
+      <Toaster position="top-right" />
+      {editingRecord && (
+        <EditModal
+          title="Edit Bank Status"
+          fields={EDIT_FIELDS}
+          values={editForm}
+          onChange={handleEditChange}
+          onSave={handleSave}
+          onClose={() => setEditingRecord(null)}
+          saving={saving}
+        />
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-lg border border-orange-200 mb-8">
@@ -577,6 +815,19 @@ const BankStatusTable = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
                 <select
+                  value={selectedYear}
+                  onChange={(e) => handleYearChange(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-black"
+                >
+                  {YEARS.map((year) => (
+                    <option key={year.value} value={year.value}>
+                      {year.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex-1">
+                <select
                   value={selectedMonth}
                   onChange={(e) => handleMonthChange(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors text-black"
@@ -637,12 +888,13 @@ const BankStatusTable = () => {
                       <TableHeader>BOE Number</TableHeader>
                       <TableHeader>Bank Vendor</TableHeader>
                       <TableHeader>Status</TableHeader>
+                      <TableHeader>Actions</TableHeader>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {bankStatuses.map((status, index) => (
                       <tr
-                        key={status.piNumber || index}
+                        key={status._id || status.piNumber || index}
                         className="hover:bg-orange-50 transition-colors"
                       >
                         <TableCell className="font-medium">
@@ -654,6 +906,12 @@ const BankStatusTable = () => {
                         <TableCell>{status.boeNo || '-'}</TableCell>
                         <TableCell>{status.bankVendor || '-'}</TableCell>
                         <TableCell>{formatStatus(status.status)}</TableCell>
+                        <TableCell>
+                          <RowActions
+                            onEdit={() => handleEdit(status)}
+                            onDelete={() => handleDelete(status)}
+                          />
+                        </TableCell>
                       </tr>
                     ))}
                   </tbody>
